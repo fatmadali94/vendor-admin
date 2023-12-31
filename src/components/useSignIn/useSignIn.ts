@@ -26,7 +26,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 export const useStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: { currentUser: [], isFetching: false, error: false },
       loginStart: () =>
         set((state: any) => ({ user: { ...state.user, isFetching: true } })),
