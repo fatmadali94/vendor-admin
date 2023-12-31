@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "sources": [
+    "PartGroups.scss",
+    "PartGroups.css"
+  ],
+  "names": [],
+  "mappings": "AAEE;EACE,aAAA;EACA,mBAAA;EACA,SAAA;EACA,mBAAA;ACDJ;ADGI;EACE,YAAA;EACA,eAAA;ACDN",
+  "file": "PartGroups.css"
+}

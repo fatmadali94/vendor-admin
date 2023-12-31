@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "sources": [
+    "PartGeneralIds.scss",
+    "PartGeneralIds.css"
+  ],
+  "names": [],
+  "mappings": "AAEE;EACE,aAAA;EACA,mBAAA;EACA,SAAA;EACA,mBAAA;ACDJ;ADGI;EACE,YAAA;EACA,eAAA;ACDN",
+  "file": "PartGeneralIds.css"
+}
