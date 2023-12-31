@@ -3,8 +3,8 @@ import "./footer.scss";
 const Footer = () => {
   return (
     <div className="footer">
-      <span>Security Camera Vendor</span>
-      <span>Security Camera Vendor</span>
+      <span>شرکت مهندسی و تحقیقات صنایع لاستیک</span>
+      <span>شرکت مهندسی و تحقیقات صنایع لاستیک</span>
     </div>
   );
 };

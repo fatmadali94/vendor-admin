@@ -5,7 +5,7 @@ const Navbar = () => {
     <div className="navbar">
       <div className="logo">
         <img src="logo.svg" alt="" />
-        <span>Security Camera Vendor</span>
+        <span>شرکت مهندسی و تحقیقات صنایع لاستیک</span>
       </div>
       <div className="icons">
         <img src="/search.svg" alt="" className="icon" />
