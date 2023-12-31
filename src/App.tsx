@@ -13,7 +13,6 @@ import "./styles/global.scss";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import Users from "./pages/users/Users";
 import { useStore } from "./components/useSignIn/useSignIn";
 import MaterialGrades from "./pages/materialGrades/MaterialGrades";
 import MaterialNames from "./pages/materialNames/MaterialNames";
@@ -28,7 +27,7 @@ const queryClient = new QueryClient();
 
 function App() {
   const user = useStore((state: any) => state.user);
-  console.log(user, "this is user from app");
+  // console.log(user, "this is user from app");
 
   const Layout = () => {
     return (
@@ -58,10 +57,10 @@ function App() {
           path: "/",
           element: <Home />,
         },
-        {
-          path: "/users",
-          element: <Users />,
-        },
+        // {
+        //   path: "/users",
+        //   element: <Users />,
+        // },
         {
           path: "/materialGrades",
           element: <MaterialGrades />,
