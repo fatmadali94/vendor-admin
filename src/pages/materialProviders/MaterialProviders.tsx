@@ -157,7 +157,6 @@ const MaterialProviders = () => {
           slug={slug}
           columns={columns}
           setOpen={setOpen}
-          parallelDataSet=""
           parallelDataSets={parallelDataSets}
         />
       )}
