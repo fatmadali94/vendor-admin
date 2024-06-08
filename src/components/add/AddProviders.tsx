@@ -12,7 +12,6 @@ type Props = {
   };
   columns: GridColDef[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  parallelDataSet: any;
   parallelDataSets: any;
 };
 
@@ -34,7 +33,7 @@ interface displaySubmission {
 }
 
 const AddProviders = (props: Props) => {
-  const { parallelDataSet, parallelDataSets, slug } = props;
+  const { parallelDataSets, slug } = props;
   const [value1, value2, value3] = parallelDataSets!;
   const [image, setImage] = useState<any>();
   const [body, setBody] = useState<any>({});
@@ -50,20 +49,20 @@ const AddProviders = (props: Props) => {
     displaySubmission[]
   >([]);
 
-  const getAll = async (parallelDataSet: string) => {
-    return axios
-      .get(`${import.meta.env.VITE_APP_URL}/${parallelDataSet}`)
-      .then((response) => {
-        return response.data;
-      })
-      .catch((error) => {
-        // `error` is defined here
-        throw error.response.data;
-      });
-    // return await axios
-    //   .get(`${import.meta.env.VITE_APP_URL}/${parallelDataSet}`)
-    //   .then((res) => res.data);
-  };
+  // const getAll = async (parallelDataSet: string) => {
+  //   return axios
+  //     .get(`${import.meta.env.VITE_APP_URL}/${parallelDataSet}`)
+  //     .then((response) => {
+  //       return response.data;
+  //     })
+  //     .catch((error) => {
+  //       // `error` is defined here
+  //       throw error.response.data;
+  //     });
+  //   // return await axios
+  //   //   .get(`${import.meta.env.VITE_APP_URL}/${parallelDataSet}`)
+  //   //   .then((res) => res.data);
+  // };
 
   const parallelDataSetsHandler = async () => {
     try {
