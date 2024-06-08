@@ -13,7 +13,7 @@ import "./styles/global.scss";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { useStore } from "./components/useSignIn/useSignIn";
+// import { useStore } from "./components/useSignIn/useSignIn";
 import MaterialGrades from "./pages/materialGrades/MaterialGrades";
 import MaterialNames from "./pages/materialNames/MaterialNames";
 import MaterialProviders from "./pages/materialProviders/MaterialProviders";
@@ -28,7 +28,7 @@ import Messages from "./pages/messages/Messages";
 const queryClient = new QueryClient();
 
 function App() {
-  const user = useStore((state: any) => state.user);
+  // const user = useStore((state: any) => state.user);
 
   const Layout = () => {
     return (

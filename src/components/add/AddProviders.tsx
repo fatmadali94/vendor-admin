@@ -89,12 +89,12 @@ const AddProviders = (props: Props) => {
     });
   }
 
-  if (parallelDataSet) {
-    var { data: parallelData } = useQuery({
-      queryKey: ["getAll", parallelDataSet],
-      queryFn: () => getAll(parallelDataSet),
-    });
-  }
+  // if (parallelDataSet) {
+  //   var { data: parallelData } = useQuery({
+  //     queryKey: ["getAll", parallelDataSet],
+  //     queryFn: () => getAll(parallelDataSet),
+  //   });
+  // }
 
   const createItem = async (body: any) => {
     return axios

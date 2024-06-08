@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 const Messages = () => {
-  const [messages, setMessages] = useState([]);
+  // const [messages, setMessages] = useState([]);
 
   // Simulating fetching data from an API
   const { isLoading, data } = useQuery({
