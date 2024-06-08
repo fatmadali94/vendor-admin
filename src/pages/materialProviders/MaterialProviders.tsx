@@ -1,10 +1,11 @@
 import { useState } from "react";
 import "./MaterialProviders.scss";
 import DataTable from "../../components/dataTable/DataTable";
-import Add from "../../components/add/Add";
+// import Add from "../../components/add/Add";
 import { GridColDef } from "@mui/x-data-grid";
 // import { materialProviders } from "../../data";
 import { useQuery } from "@tanstack/react-query";
+import AddProviders from "../../components/add/AddProviders";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
@@ -77,6 +78,24 @@ const columns: GridColDef[] = [
     width: 150,
     type: "options",
   },
+  // {
+  //   field: "material",
+  //   headerName: "material",
+  //   width: 150,
+  //   type: "dropdown",
+  // },
+  {
+    field: "BTN",
+    headerName: "BTN",
+    width: 150,
+    type: "button",
+  },
+  {
+    field: "Record",
+    headerName: "Record",
+    width: 150,
+    type: "record",
+  },
 ];
 
 const MaterialProviders = () => {
@@ -134,7 +153,7 @@ const MaterialProviders = () => {
         />
       )}
       {open && (
-        <Add
+        <AddProviders
           slug={slug}
           columns={columns}
           setOpen={setOpen}

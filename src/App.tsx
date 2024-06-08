@@ -22,12 +22,13 @@ import PartNames from "./pages/partNames/PartNames";
 import PartGeneralIds from "./pages/partGeneralIds/PartGeneralIds";
 import PartProviders from "./pages/partProviders/PartProviders";
 import MaterialGroups from "./pages/materialGroups/MaterialGroups";
+import Exhibitions from "./pages/exhibitions/Exhibitions";
+import Messages from "./pages/messages/Messages";
 
 const queryClient = new QueryClient();
 
 function App() {
   const user = useStore((state: any) => state.user);
-  // console.log(user, "this is user from app");
 
   const Layout = () => {
     return (
@@ -39,7 +40,8 @@ function App() {
           </div>
           <div className="contentContainer">
             <QueryClientProvider client={queryClient}>
-              {user.currentUser.isAdmin ? <Outlet /> : <Login />}
+              {/* {user.currentUser.isAdmin ? <Outlet /> : <Login />} */}
+              <Outlet />
             </QueryClientProvider>
           </div>
         </div>
@@ -61,6 +63,10 @@ function App() {
         //   path: "/users",
         //   element: <Users />,
         // },
+        {
+          path: "/messages",
+          element: <Messages />,
+        },
         {
           path: "/materialGrades",
           element: <MaterialGrades />,
@@ -96,6 +102,10 @@ function App() {
         {
           path: "/partProviders",
           element: <PartProviders />,
+        },
+        {
+          path: "/exhibitions",
+          element: <Exhibitions />,
         },
 
         {

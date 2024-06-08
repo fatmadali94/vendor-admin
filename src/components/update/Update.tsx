@@ -20,7 +20,6 @@ const Update = (props: Props) => {
   const { parallelDataSet, slug, row } = props;
   const [image, setImage] = useState<any>();
   const [body, setBody] = useState<any>({});
-  console.log(row, "this is products row");
 
   async function getAll(parallelDataSet: string) {
     const res = await axios.get(
@@ -71,7 +70,6 @@ const Update = (props: Props) => {
   const handleImageSelect = (e: any) => {
     const file = e.target.files[0];
     setFileToBase(file);
-    console.log(file);
   };
 
   const setFileToBase = (file: any) => {
@@ -98,7 +96,6 @@ const Update = (props: Props) => {
     //   console.log(value);
     // }
     body.image = image;
-    console.log(body, "this is the body");
     mutation.mutate(body, row);
 
     props.setOpen(false);

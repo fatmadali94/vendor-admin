@@ -17,14 +17,6 @@ const DataTable = (props: Props) => {
   const [open, setOpen] = useState(false);
   const [row, setRow] = useState({});
 
-  // const nr = () => {
-  //   props.rows.map((row: any) => {
-  //     console.log(row);
-  //   });
-  // };
-
-  // nr();
-
   const newRows =
     props.rows.length > 0
       ? props.rows.map((row) => {
@@ -61,9 +53,6 @@ const DataTable = (props: Props) => {
   });
 
   const handleDelete = (id: any) => {
-    //delete the item
-    // console.log(id, "this is the di ");
-
     mutation.mutate(id);
   };
   const handleUpdate = (row: any) => {

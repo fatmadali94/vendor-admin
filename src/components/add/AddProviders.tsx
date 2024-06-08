@@ -1,8 +1,9 @@
+import { useState, useEffect } from "react";
 import { GridColDef } from "@mui/x-data-grid";
 import "./add.scss";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
+import CustomDropdown from "../customDropdown/CustomDropdown";
 
 type Props = {
   slug: {
@@ -15,11 +16,39 @@ type Props = {
   parallelDataSets: any;
 };
 
-const Add = (props: Props) => {
+interface selections {
+  materialgrade: any;
+  materialname: any;
+  materialgroup: any;
+}
+
+interface submissions {
+  materialgrade: number;
+  materialname: number;
+  materialgroup: number;
+}
+interface displaySubmission {
+  materialgrade: String;
+  materialname: String;
+  materialgroup: String;
+}
+
+const AddProviders = (props: Props) => {
   const { parallelDataSet, parallelDataSets, slug } = props;
   const [value1, value2, value3] = parallelDataSets!;
   const [image, setImage] = useState<any>();
   const [body, setBody] = useState<any>({});
+  const [selections, setSelections] = useState<selections>({
+    materialgrade: {},
+    materialgroup: {},
+    materialname: {},
+  });
+  const [reset, setReset] = useState(false);
+
+  const [submissions, setSubmissions] = useState<submissions[]>([]);
+  const [displaySubmission, setDisplaySubmission] = useState<
+    displaySubmission[]
+  >([]);
 
   const getAll = async (parallelDataSet: string) => {
     return axios
@@ -35,6 +64,7 @@ const Add = (props: Props) => {
     //   .get(`${import.meta.env.VITE_APP_URL}/${parallelDataSet}`)
     //   .then((res) => res.data);
   };
+
   const parallelDataSetsHandler = async () => {
     try {
       const res = await Promise.all([
@@ -58,6 +88,7 @@ const Add = (props: Props) => {
       queryFn: () => parallelDataSetsHandler(),
     });
   }
+
   if (parallelDataSet) {
     var { data: parallelData } = useQuery({
       queryKey: ["getAll", parallelDataSet],
@@ -91,9 +122,7 @@ const Add = (props: Props) => {
       });
     }
   };
-  //   const handleImageSelect = (e: any) => {
-  //     setImage(e.target.files[0]);
-  //   };
+
   const handleImageSelect = (e: any) => {
     const file = e.target.files[0];
     setFileToBase(file);
@@ -110,10 +139,45 @@ const Add = (props: Props) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     body.image = image;
+    body.records = submissions;
     mutation.mutate(body);
     props.setOpen(false);
     alert("addition successful");
   };
+
+  const buttonClickHandler = (event: any) => {
+    event.preventDefault();
+    setSubmissions([
+      ...submissions,
+      {
+        materialgroup: selections.materialgroup._id,
+        materialgrade: selections.materialgrade._id,
+        materialname: selections.materialname._id,
+      },
+    ]);
+    setDisplaySubmission([
+      ...displaySubmission,
+      {
+        materialgroup: selections.materialgroup.title,
+        materialgrade: selections.materialgrade.title,
+        materialname: selections.materialname.title,
+      },
+    ]);
+    setReset(true);
+  };
+
+  const handleSelect = (dropdownName: any, selectedOption: any) => {
+    setSelections((prevState) => ({
+      ...prevState,
+      [dropdownName]: selectedOption,
+    }));
+  };
+
+  useEffect(() => {
+    if (reset) {
+      setReset(false);
+    }
+  }, [reset]);
 
   return (
     <div className="add">
@@ -182,44 +246,88 @@ const Add = (props: Props) => {
                   return (
                     <div className="item" key={index}>
                       <label>{column.headerName}</label>
-
-                      <select
+                      {/* <select
                         id="options"
                         multiple
-                        onChange={updateData}
+                        onChange={handleChange}
                         name={column.field}
-                      >
-                        {newData &&
+                      > */}
+                      {/* {newData &&
                           parallelDataSets !== "" &&
                           column.headerName === parallelDataSets[0].title &&
                           newData[0].map((data: any) => (
-                            <option value={data._id} key={data._id}>
+                            <option
+                              value={data._id}
+                              key={data._id}
+                              onClick={buttonClickHandler}
+                            >
                               {data.title || data.model}
                             </option>
-                          ))}
-                        {newData &&
+                          ))} */}
+                      {
+                        newData &&
                           parallelDataSets !== "" &&
-                          column.headerName === parallelDataSets[1].title &&
-                          newData[1].map((data: any) => (
-                            <option value={data._id} key={data._id}>
-                              {data.title || data.model}
-                            </option>
-                          ))}
-                        {newData &&
+                          column.headerName === parallelDataSets[0].title && (
+                            <CustomDropdown
+                              options={newData[0]}
+                              onSelect={(option: any) =>
+                                handleSelect("materialgroup", option)
+                              }
+                              reset={reset}
+                            />
+                          )
+                        // newData[1].map((data: any) => (
+                        //   <option value={data._id} key={data._id}>
+                        //     {data.title || data.model}
+                        //   </option>
+                        // ))
+                      }
+                      {
+                        newData &&
                           parallelDataSets !== "" &&
-                          column.headerName === parallelDataSets[2].title &&
-                          newData[2].map((data: any) => (
-                            <option value={data._id} key={data._id}>
-                              {data.title || data.model}
-                            </option>
-                          ))}
-                        {parallelData &&
+                          column.headerName === parallelDataSets[1].title && (
+                            <CustomDropdown
+                              options={newData[1]}
+                              onSelect={(option: any) =>
+                                handleSelect("materialname", option)
+                              }
+                              reset={reset}
+                            />
+                          )
+                        // newData[2].map((data: any) => (
+                        //   <option value={data._id} key={data._id}>
+                        //     {data.title || data.model}
+                        //   </option>
+                        // ))
+                      }
+                      {
+                        newData &&
+                          parallelDataSets !== "" &&
+                          column.headerName === parallelDataSets[2].title && (
+                            <CustomDropdown
+                              options={newData[2]}
+                              onSelect={(option: any) =>
+                                handleSelect("materialgrade", option)
+                              }
+                              reset={reset}
+                            />
+                          )
+                        // (
+                        //   <CustomDropdown options={newData[2]} />
+                        // )
+                        // newData[2].map((data: any) => (
+                        //   <option value={data._id} key={data._id}>
+                        //     {data.title || data.model}
+                        //   </option>
+                        // ))
+                      }
+                      {/* {parallelData &&
                           parallelData.map((data: any) => (
                             <option value={data._id} key={data._id}>
                               {data.title || data.model}
                             </option>
-                          ))}
-                      </select>
+                          ))} */}
+                      {/* </select> */}
                     </div>
                   );
                   break;
@@ -253,11 +361,51 @@ const Add = (props: Props) => {
                   );
                   break;
                 }
+                case "button": {
+                  return (
+                    <div className="item" key={index}>
+                      <label>{column.headerName}</label>
+                      <button onClick={buttonClickHandler}>Submit</button>
+                    </div>
+                  );
+                  break;
+                }
+                case "record": {
+                  return (
+                    <div
+                      className="item"
+                      style={{ width: "100%", padding: "10px 0" }}
+                    >
+                      <table>
+                        <thead>
+                          <tr style={{ textAlign: "left" }}>
+                            <th>Material Group</th>
+                            <th>Material Name</th>
+                            <th>Material Grade</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {displaySubmission.map((submission: any, index) => (
+                            <tr key={index}>
+                              <td>{submission.materialgroup}</td>
+                              <td>{submission.materialname}</td>
+                              <td>{submission.materialgrade}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  );
+
+                  break;
+                }
 
                 default:
                   break;
               }
             })}
+
           <button>Send</button>
         </form>
       </div>
@@ -265,4 +413,4 @@ const Add = (props: Props) => {
   );
 };
 
-export default Add;
+export default AddProviders;

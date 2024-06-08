@@ -9,12 +9,12 @@ export const menu = [
         url: "/",
         icon: "home.svg",
       },
-      // {
-      //   id: 2,
-      //   title: "Profile",
-      //   url: "/users/1",
-      //   icon: "user.svg",
-      // },
+      {
+        id: 2,
+        title: "Messages",
+        url: "/messages",
+        icon: "user.svg",
+      },
     ],
   },
   {
@@ -86,7 +86,19 @@ export const menu = [
     ],
   },
   {
-    id: 3,
+    id: 4,
+    title: "EXHIBITION",
+    listItems: [
+      {
+        id: 1,
+        title: "Exhibitions",
+        url: "/exhibitions",
+        icon: "product.svg",
+      },
+    ],
+  },
+  {
+    id: 5,
     title: "general",
     listItems: [
       {
@@ -116,7 +128,7 @@ export const menu = [
     ],
   },
   {
-    id: 4,
+    id: 6,
     title: "Maintenance",
     listItems: [
       {
@@ -134,7 +146,7 @@ export const menu = [
     ],
   },
   {
-    id: 5,
+    id: 7,
     title: "analytics",
     listItems: [
       {
