@@ -10,28 +10,49 @@ type Props = {
   rows: Array<any>;
   slug: any;
   parallelDataSet: any;
+  materials: any;
   // parallelDataSets: any;
 };
 
 const DataTable = (props: Props) => {
   const [open, setOpen] = useState(false);
   const [row, setRow] = useState({});
+  console.log(row);
+
+  const { materials } = props;
 
   const newRows =
     props.rows.length > 0
       ? props.rows.map((row) => {
-          if (row[props.parallelDataSet]) {
-            const secondaryTitle = row[props.parallelDataSet].map(
-              (sec: any) => sec.title
-            );
+          let materialgrades = "";
+          let materialnames = "";
+          let materialgroups = "";
 
-            return {
-              ...row,
-              [props.parallelDataSet]: secondaryTitle.toString(),
-            };
-          } else {
-            return row;
+          if (row.records && row.records.length > 0) {
+            row.records.forEach(
+              (record: {
+                materialgrade: { title: string };
+                materialname: { title: string };
+                materialgroup: { title: string };
+              }) => {
+                if (record.materialgrade && record.materialgrade.title) {
+                  materialgrades += record.materialgrade.title + ", ";
+                }
+                if (record.materialname && record.materialname.title) {
+                  materialnames += record.materialname.title + ", ";
+                }
+                if (record.materialgroup && record.materialgroup.title) {
+                  materialgroups += record.materialgroup.title + ", ";
+                }
+              }
+            );
           }
+          return {
+            ...row,
+            materialgrades, // Append concatenated material grade titles
+            materialnames, // Append concatenated material name titles
+            materialgroups, // Append concatenated material group titles
+          };
         })
       : "";
 
@@ -65,18 +86,13 @@ const DataTable = (props: Props) => {
     headerName: "Action",
     width: 200,
     renderCell: (params) => {
-      // console.log(params.row, "this is row id");
-
       return (
         <div className="action">
-          {/* <button onClick={() => setOpen(true)}>Add New Product</button> */}
-          {/* <Link to={`/${props.slug.title}/${params.row.id}`}> */}
           <img
             src="/view.svg"
             alt=""
             onClick={() => handleUpdate(params.row)}
           />
-          {/* </Link> */}
           <div className="delete" onClick={() => handleDelete(params.row._id)}>
             <img src="/delete.svg" alt="" />
           </div>
@@ -123,6 +139,7 @@ const DataTable = (props: Props) => {
           setOpen={setOpen}
           parallelDataSet={props.parallelDataSet}
           row={row || []}
+          materials={materials}
         />
       )}
     </div>

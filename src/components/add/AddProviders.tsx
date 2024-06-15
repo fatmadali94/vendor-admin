@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { GridColDef } from "@mui/x-data-grid";
 import "./add.scss";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import CustomDropdown from "../customDropdown/CustomDropdown";
-
 type Props = {
   slug: {
     title: string;
@@ -13,6 +12,7 @@ type Props = {
   columns: GridColDef[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   parallelDataSets: any;
+  materials: any;
 };
 
 interface selections {
@@ -33,8 +33,7 @@ interface displaySubmission {
 }
 
 const AddProviders = (props: Props) => {
-  const { parallelDataSets, slug } = props;
-  const [value1, value2, value3] = parallelDataSets!;
+  const { parallelDataSets, slug, materials } = props;
   const [image, setImage] = useState<any>();
   const [body, setBody] = useState<any>({});
   const [selections, setSelections] = useState<selections>({
@@ -43,63 +42,18 @@ const AddProviders = (props: Props) => {
     materialname: {},
   });
   const [reset, setReset] = useState(false);
-
   const [submissions, setSubmissions] = useState<submissions[]>([]);
   const [displaySubmission, setDisplaySubmission] = useState<
     displaySubmission[]
   >([]);
-
-  // const getAll = async (parallelDataSet: string) => {
-  //   return axios
-  //     .get(`${import.meta.env.VITE_APP_URL}/${parallelDataSet}`)
-  //     .then((response) => {
-  //       return response.data;
-  //     })
-  //     .catch((error) => {
-  //       // `error` is defined here
-  //       throw error.response.data;
-  //     });
-  //   // return await axios
-  //   //   .get(`${import.meta.env.VITE_APP_URL}/${parallelDataSet}`)
-  //   //   .then((res) => res.data);
-  // };
-
-  const parallelDataSetsHandler = async () => {
-    try {
-      const res = await Promise.all([
-        axios.get(`${import.meta.env.VITE_APP_URL}/${value1.title}`),
-        axios.get(`${import.meta.env.VITE_APP_URL}/${value2.title}`),
-        axios.get(`${import.meta.env.VITE_APP_URL}/${value3.title}`),
-      ]);
-      const data = res.map((res) => res.data);
-      return data;
-    } catch {
-      throw Error("Promise failed");
-    }
-
-    // now `responses` is an array of the response data
-  };
-
-  const queryClient = useQueryClient();
-  if (parallelDataSets !== "") {
-    var { data: newData } = useQuery({
-      queryKey: ["getParallel"],
-      queryFn: () => parallelDataSetsHandler(),
-    });
-  }
-
-  // if (parallelDataSet) {
-  //   var { data: parallelData } = useQuery({
-  //     queryKey: ["getAll", parallelDataSet],
-  //     queryFn: () => getAll(parallelDataSet),
-  //   });
-  // }
+  console.log(body, "body");
 
   const createItem = async (body: any) => {
     return axios
       .post(`${import.meta.env.VITE_APP_URL}${slug.route}`, body)
       .then((res) => res.data);
   };
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: createItem,
@@ -109,17 +63,11 @@ const AddProviders = (props: Props) => {
   });
 
   const updateData = (e: any) => {
-    if (e.target.name === "instock") {
-      setBody({
-        ...body,
-        [e.target.name]: e.target.checked,
-      });
-    } else {
-      setBody({
-        ...body,
-        [e.target.name]: e.target.value,
-      });
-    }
+    const { name, type, checked, value } = e.target;
+    setBody((prevBody: any) => ({
+      ...prevBody,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleImageSelect = (e: any) => {
@@ -135,13 +83,15 @@ const AddProviders = (props: Props) => {
     };
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    body.has_export = body.has_export ? true : false;
+    body.knowledge_based = body.knowledge_based ? true : false;
     body.image = image;
     body.records = submissions;
     mutation.mutate(body);
     props.setOpen(false);
-    alert("addition successful");
+    alert("تامین کننده با موفقیت اضافه شد ");
   };
 
   const buttonClickHandler = (event: any) => {
@@ -227,16 +177,21 @@ const AddProviders = (props: Props) => {
                   );
                   break;
                 }
-                case "password": {
+                case "dropdown": {
                   return (
                     <div className="item" key={index}>
-                      <label>{column.headerName}</label>
-                      <input
-                        name={column.field}
-                        type={column.type}
-                        placeholder={column.field}
+                      <label>نوع تولید</label>
+                      <select
+                        name="production_type"
                         onChange={updateData}
-                      />
+                        style={{ height: "30px" }}
+                      >
+                        <option value="industrial-production">صنعتی</option>
+                        <option value="semi-industrial-production">
+                          نیمه صنعتی
+                        </option>
+                        <option value="trial-production">آزمایشی</option>
+                      </select>
                     </div>
                   );
                   break;
@@ -245,88 +200,39 @@ const AddProviders = (props: Props) => {
                   return (
                     <div className="item" key={index}>
                       <label>{column.headerName}</label>
-                      {/* <select
-                        id="options"
-                        multiple
-                        onChange={handleChange}
-                        name={column.field}
-                      > */}
-                      {/* {newData &&
-                          parallelDataSets !== "" &&
-                          column.headerName === parallelDataSets[0].title &&
-                          newData[0].map((data: any) => (
-                            <option
-                              value={data._id}
-                              key={data._id}
-                              onClick={buttonClickHandler}
-                            >
-                              {data.title || data.model}
-                            </option>
-                          ))} */}
-                      {
-                        newData &&
-                          parallelDataSets !== "" &&
-                          column.headerName === parallelDataSets[0].title && (
-                            <CustomDropdown
-                              options={newData[0]}
-                              onSelect={(option: any) =>
-                                handleSelect("materialgroup", option)
-                              }
-                              reset={reset}
-                            />
-                          )
-                        // newData[1].map((data: any) => (
-                        //   <option value={data._id} key={data._id}>
-                        //     {data.title || data.model}
-                        //   </option>
-                        // ))
-                      }
-                      {
-                        newData &&
-                          parallelDataSets !== "" &&
-                          column.headerName === parallelDataSets[1].title && (
-                            <CustomDropdown
-                              options={newData[1]}
-                              onSelect={(option: any) =>
-                                handleSelect("materialname", option)
-                              }
-                              reset={reset}
-                            />
-                          )
-                        // newData[2].map((data: any) => (
-                        //   <option value={data._id} key={data._id}>
-                        //     {data.title || data.model}
-                        //   </option>
-                        // ))
-                      }
-                      {
-                        newData &&
-                          parallelDataSets !== "" &&
-                          column.headerName === parallelDataSets[2].title && (
-                            <CustomDropdown
-                              options={newData[2]}
-                              onSelect={(option: any) =>
-                                handleSelect("materialgrade", option)
-                              }
-                              reset={reset}
-                            />
-                          )
-                        // (
-                        //   <CustomDropdown options={newData[2]} />
-                        // )
-                        // newData[2].map((data: any) => (
-                        //   <option value={data._id} key={data._id}>
-                        //     {data.title || data.model}
-                        //   </option>
-                        // ))
-                      }
-                      {/* {parallelData &&
-                          parallelData.map((data: any) => (
-                            <option value={data._id} key={data._id}>
-                              {data.title || data.model}
-                            </option>
-                          ))} */}
-                      {/* </select> */}
+                      {materials &&
+                        parallelDataSets !== "" &&
+                        column.headerName === parallelDataSets[0].title && (
+                          <CustomDropdown
+                            options={materials[0]}
+                            onSelect={(option: any) =>
+                              handleSelect("materialgroup", option)
+                            }
+                            reset={reset}
+                          />
+                        )}
+                      {materials &&
+                        parallelDataSets !== "" &&
+                        column.headerName === parallelDataSets[1].title && (
+                          <CustomDropdown
+                            options={materials[1]}
+                            onSelect={(option: any) =>
+                              handleSelect("materialname", option)
+                            }
+                            reset={reset}
+                          />
+                        )}
+                      {materials &&
+                        parallelDataSets !== "" &&
+                        column.headerName === parallelDataSets[2].title && (
+                          <CustomDropdown
+                            options={materials[2]}
+                            onSelect={(option: any) =>
+                              handleSelect("materialgrade", option)
+                            }
+                            reset={reset}
+                          />
+                        )}
                     </div>
                   );
                   break;
@@ -348,7 +254,7 @@ const AddProviders = (props: Props) => {
                 }
                 case "checkbox": {
                   return (
-                    <div className="item" key={index}>
+                    <div className="row-item" key={index}>
                       <label>{column.headerName}</label>
                       <input
                         name={column.field}

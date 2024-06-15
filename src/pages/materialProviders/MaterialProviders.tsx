@@ -1,12 +1,10 @@
 import { useState } from "react";
 import "./MaterialProviders.scss";
 import DataTable from "../../components/dataTable/DataTable";
-// import Add from "../../components/add/Add";
 import { GridColDef } from "@mui/x-data-grid";
-// import { materialProviders } from "../../data";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import AddProviders from "../../components/add/AddProviders";
-
+import axios from "axios";
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
   {
@@ -21,38 +19,7 @@ const columns: GridColDef[] = [
     field: "name",
     type: "text",
     headerName: "Name",
-    width: 250,
-  },
-
-  {
-    field: "link",
-    headerName: "Link",
     width: 150,
-    type: "text",
-  },
-  {
-    field: "email",
-    headerName: "Email",
-    width: 150,
-    type: "text",
-  },
-  {
-    field: "lat",
-    headerName: "Lat",
-    width: 150,
-    type: "number",
-  },
-  {
-    field: "lng",
-    headerName: "Lng",
-    width: 150,
-    type: "number",
-  },
-  {
-    field: "description",
-    headerName: "Description",
-    width: 150,
-    type: "text",
   },
   {
     field: "phone",
@@ -61,29 +28,98 @@ const columns: GridColDef[] = [
     type: "number",
   },
   {
+    field: "link",
+    headerName: "Link",
+    width: 150,
+    type: "text",
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    width: 150,
+    type: "text",
+  },
+  {
+    field: "address",
+    headerName: "Address",
+    width: 150,
+    type: "text",
+  },
+  {
+    field: "email",
+    headerName: "Email",
+    width: 150,
+    type: "email",
+  },
+  {
+    field: "export_destination",
+    type: "text",
+    headerName: "export_destination",
+    width: 150,
+  },
+
+  {
+    field: "production_type",
+    type: "dropdown",
+    headerName: "production_type",
+    width: 150,
+  },
+
+  {
+    field: "score",
+    headerName: "score",
+    width: 150,
+    type: "number",
+  },
+  {
+    field: "establish_year",
+    headerName: "establish_year",
+    width: 150,
+    type: "number",
+  },
+  {
+    field: "production_volume",
+    headerName: "production_volume",
+    width: 150,
+    type: "number",
+  },
+  {
+    field: "cooperation_length",
+    headerName: "cooperation_length",
+    width: 150,
+    type: "number",
+  },
+  {
+    field: "has_export",
+    type: "checkbox",
+    headerName: "has_export",
+    width: 150,
+  },
+  {
+    field: "knowledge_based",
+    type: "checkbox",
+    headerName: "knowledge_based",
+    width: 150,
+  },
+
+  {
     field: "materialgrades",
     headerName: "materialGrades",
-    width: 150,
+    width: 200,
     type: "options",
   },
   {
     field: "materialnames",
     headerName: "materialNames",
-    width: 150,
+    width: 200,
     type: "options",
   },
   {
     field: "materialgroups",
     headerName: "materialGroups",
-    width: 150,
+    width: 200,
     type: "options",
   },
-  // {
-  //   field: "material",
-  //   headerName: "material",
-  //   width: 150,
-  //   type: "dropdown",
-  // },
   {
     field: "BTN",
     headerName: "BTN",
@@ -117,12 +153,26 @@ const MaterialProviders = () => {
       title: "materialGrades",
     },
   ];
-  // const tableParallelDataSets = [
-  //   { title: "materialgrades" },
-  //   { title: "materialgroups" },
-  //   { title: "materialnames" },
-  // ];
-  // TEST THE API
+  const parallelDataSetsHandler = async () => {
+    try {
+      const res = await Promise.all([
+        axios.get(`${import.meta.env.VITE_APP_URL}/materialGroups`),
+        axios.get(`${import.meta.env.VITE_APP_URL}/materialNames`),
+        axios.get(`${import.meta.env.VITE_APP_URL}/materialGrades`),
+      ]);
+      const data = res.map((res) => res.data);
+      return data;
+    } catch {
+      throw Error("Promise failed");
+    }
+  };
+
+  if (parallelDataSets !== "") {
+    var { data: materials } = useQuery({
+      queryKey: ["getParallel"],
+      queryFn: () => parallelDataSetsHandler(),
+    });
+  }
 
   const { isLoading, data } = useQuery({
     queryKey: ["materialProviders"],
@@ -131,6 +181,7 @@ const MaterialProviders = () => {
         res.json()
       ),
   });
+  console.log(data, "Data");
 
   return (
     <div className="materialProviders">
@@ -138,8 +189,6 @@ const MaterialProviders = () => {
         <h1>MaterialProviders</h1>
         <button onClick={() => setOpen(true)}>Add New MaterialProvider</button>
       </div>
-      {/* <DataTable slug="materialProviders" columns={columns} rows={materialProviders} /> */}
-      {/* TEST THE API */}
 
       {isLoading ? (
         "Loading..."
@@ -149,7 +198,7 @@ const MaterialProviders = () => {
           columns={columns}
           rows={data}
           parallelDataSet="materialgrades"
-          // parallelDataSets={tableParallelDataSets}
+          materials={materials}
         />
       )}
       {open && (
@@ -158,6 +207,7 @@ const MaterialProviders = () => {
           columns={columns}
           setOpen={setOpen}
           parallelDataSets={parallelDataSets}
+          materials={materials}
         />
       )}
     </div>
