@@ -1,11 +1,12 @@
-import { useState } from "react";
-import "./Exhibitions.scss";
-import "./Exhibitions.css";
+// import { useState } from "react";
+import "./offers.scss";
+import "./offers.css";
 import DataTable from "../../components/dataTable/DataTable";
-import Add from "../../components/add/Add";
+// import Add from "../../components/add/Add";
 import { GridColDef } from "@mui/x-data-grid";
 // import { partGeneralIds } from "../../data";
 import { useQuery } from "@tanstack/react-query";
+// import { useNewOffersCount } from "../../helpers/fetchOffers";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
@@ -24,12 +25,30 @@ const columns: GridColDef[] = [
     headerName: "title",
     width: 150,
   },
+  {
+    field: "name",
+    type: "text",
+    headerName: "name",
+    width: 150,
+  },
+  {
+    field: "email",
+    type: "text",
+    headerName: "email",
+    width: 150,
+  },
+  {
+    field: "phone",
+    type: "number",
+    headerName: "phone",
+    width: 150,
+  },
 
   {
     field: "description",
     headerName: "Description",
     type: "text",
-    width: 200,
+    width: 400,
   },
   {
     field: "createdAt",
@@ -39,34 +58,27 @@ const columns: GridColDef[] = [
   },
 ];
 
-const Exhibitions = () => {
-  const [open, setOpen] = useState(false);
-
+const Offers = () => {
   const slug = {
-    title: "exhibitions",
-    route: "createExhibition",
-    single: "exhibition",
+    title: "offers",
+    route: "createOffer",
+    single: "offer",
   };
   // TEST THE API
 
   const { isLoading, data } = useQuery({
-    queryKey: ["exhibitions"],
+    queryKey: ["offers"],
     queryFn: () =>
-      fetch(`${import.meta.env.VITE_APP_URL}exhibitions`).then((res) =>
-        res.json()
-      ),
+      fetch(`${import.meta.env.VITE_APP_URL}offers`).then((res) => res.json()),
   });
 
-  console.log(data);
+  console.log(data, "data");
 
   return (
     <div className="exhibitions">
       <div className="info">
-        <h1>Exhibitions</h1>
-        <button onClick={() => setOpen(true)}>Add New Exhibition</button>
+        <h1>Offers</h1>
       </div>
-      {/* <DataTable slug="partGeneralIds" columns={columns} rows={partGeneralIds} /> */}
-      {/* TEST THE API */}
 
       {isLoading ? (
         "Loading..."
@@ -75,21 +87,12 @@ const Exhibitions = () => {
           slug={slug}
           columns={columns}
           rows={data}
-          parallelDataSet="exhibitions"
+          parallelDataSet="offers"
           materials={undefined}
-        />
-      )}
-      {open && (
-        <Add
-          slug={slug}
-          columns={columns}
-          setOpen={setOpen}
-          parallelDataSet="exhibitions"
-          parallelDataSets=""
         />
       )}
     </div>
   );
 };
 
-export default Exhibitions;
+export default Offers;

@@ -24,6 +24,7 @@ import PartProviders from "./pages/partProviders/PartProviders";
 import MaterialGroups from "./pages/materialGroups/MaterialGroups";
 import Exhibitions from "./pages/exhibitions/Exhibitions";
 import Messages from "./pages/messages/Messages";
+import Offers from "./pages/offers/Offers";
 
 const queryClient = new QueryClient();
 
@@ -35,15 +36,15 @@ function App() {
       <div className="main">
         <Navbar />
         <div className="container">
-          <div className="menuContainer">
-            <Menu />
-          </div>
-          <div className="contentContainer">
-            <QueryClientProvider client={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <div className="menuContainer">
+              <Menu />
+            </div>
+            <div className="contentContainer">
               {/* {user.currentUser.isAdmin ? <Outlet /> : <Login />} */}
               <Outlet />
-            </QueryClientProvider>
-          </div>
+            </div>
+          </QueryClientProvider>
         </div>
         <Footer />
       </div>
@@ -108,6 +109,10 @@ function App() {
           element: <Exhibitions />,
         },
 
+        {
+          path: "/offers",
+          element: <Offers />,
+        },
         {
           path: "/login",
           element: <Login />,

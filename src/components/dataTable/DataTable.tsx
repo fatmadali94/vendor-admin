@@ -11,18 +11,17 @@ type Props = {
   slug: any;
   parallelDataSet: any;
   materials: any;
-  // parallelDataSets: any;
+  parts: any;
 };
 
 const DataTable = (props: Props) => {
   const [open, setOpen] = useState(false);
   const [row, setRow] = useState({});
-  console.log(row);
 
-  const { materials } = props;
+  const { materials, parts } = props;
 
   const newRows =
-    props.rows.length > 0
+    props.rows.length > 0 && materials
       ? props.rows.map((row) => {
           let materialgrades = "";
           let materialnames = "";
@@ -54,7 +53,39 @@ const DataTable = (props: Props) => {
             materialgroups, // Append concatenated material group titles
           };
         })
-      : "";
+      : props.rows.length > 0 && parts
+      ? props.rows.map((row) => {
+          let materialgrades = "";
+          let materialnames = "";
+          let materialgroups = "";
+
+          if (row.records && row.records.length > 0) {
+            row.records.forEach(
+              (record: {
+                materialgrade: { title: string };
+                materialname: { title: string };
+                materialgroup: { title: string };
+              }) => {
+                if (record.materialgrade && record.materialgrade.title) {
+                  materialgrades += record.materialgrade.title + ", ";
+                }
+                if (record.materialname && record.materialname.title) {
+                  materialnames += record.materialname.title + ", ";
+                }
+                if (record.materialgroup && record.materialgroup.title) {
+                  materialgroups += record.materialgroup.title + ", ";
+                }
+              }
+            );
+          }
+          return {
+            ...row,
+            materialgrades, // Append concatenated material grade titles
+            materialnames, // Append concatenated material name titles
+            materialgroups, // Append concatenated material group titles
+          };
+        })
+      : props.rows;
 
   // TEST THE API
 
@@ -96,6 +127,27 @@ const DataTable = (props: Props) => {
           <div className="delete" onClick={() => handleDelete(params.row._id)}>
             <img src="/delete.svg" alt="" />
           </div>
+          {params.row.title === "Offers" && (
+            <div>
+              {/* <img
+              src={params?.row?.image?.url}
+              alt=""
+              style={{ width: "50px", height: "50px" }}
+            /> */}
+              <a href={params?.row?.image?.url} download>
+                <button
+                  style={{
+                    padding: "5px",
+                    backgroundColor: "#555",
+                    color: "#fff",
+                    borderRadius: "10px",
+                  }}
+                >
+                  دانلود فایل
+                </button>
+              </a>
+            </div>
+          )}
         </div>
       );
     },

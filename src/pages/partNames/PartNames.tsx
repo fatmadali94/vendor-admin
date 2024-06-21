@@ -1,9 +1,8 @@
 import { useState } from "react";
-import "./PartNames.scss";
+import "./partNames.scss";
 import DataTable from "../../components/dataTable/DataTable";
 import Add from "../../components/add/Add";
 import { GridColDef } from "@mui/x-data-grid";
-// import { partNames } from "../../data";
 import { useQuery } from "@tanstack/react-query";
 
 const columns: GridColDef[] = [
@@ -44,13 +43,13 @@ const columns: GridColDef[] = [
   },
 ];
 
-const PartNames = () => {
+const partNames = () => {
   const [open, setOpen] = useState(false);
 
   const slug = {
     title: "partNames",
     route: "createPartName",
-    single: "partName",
+    single: "partNames",
   };
   // TEST THE API
 
@@ -61,11 +60,12 @@ const PartNames = () => {
         res.json()
       ),
   });
+  console.log(data, "this is part names");
 
   return (
     <div className="partNames">
       <div className="info">
-        <h1>PartNames</h1>
+        <h1>partNames</h1>
         <button onClick={() => setOpen(true)}>Add New PartName</button>
       </div>
       {/* <DataTable slug="partNames" columns={columns} rows={partNames} /> */}
@@ -78,7 +78,9 @@ const PartNames = () => {
           slug={slug}
           columns={columns}
           rows={data}
-          parallelDataSet="partgroups"
+          parallelDataSet="partNames"
+          materials={undefined}
+          parts={undefined}
         />
       )}
       {open && (
@@ -94,4 +96,4 @@ const PartNames = () => {
   );
 };
 
-export default PartNames;
+export default partNames;

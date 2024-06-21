@@ -2,9 +2,9 @@ import { useState } from "react";
 import "./MaterialProviders.scss";
 import DataTable from "../../components/dataTable/DataTable";
 import { GridColDef } from "@mui/x-data-grid";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import AddProviders from "../../components/add/AddProviders";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import AddMaterialProviders from "../../components/add/AddMaterialProviders";
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
   {
@@ -199,10 +199,11 @@ const MaterialProviders = () => {
           rows={data}
           parallelDataSet="materialgrades"
           materials={materials}
+          parts={undefined}
         />
       )}
       {open && (
-        <AddProviders
+        <AddMaterialProviders
           slug={slug}
           columns={columns}
           setOpen={setOpen}

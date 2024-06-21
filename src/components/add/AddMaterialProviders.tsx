@@ -32,7 +32,7 @@ interface displaySubmission {
   materialgroup: String;
 }
 
-const AddProviders = (props: Props) => {
+const AddMaterialProviders = (props: Props) => {
   const { parallelDataSets, slug, materials } = props;
   const [image, setImage] = useState<any>();
   const [body, setBody] = useState<any>({});
@@ -318,4 +318,4 @@ const AddProviders = (props: Props) => {
   );
 };
 
-export default AddProviders;
+export default AddMaterialProviders;

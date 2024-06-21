@@ -1,13 +1,9 @@
 import { useState } from "react";
-import "./PartGroups.scss";
+import "./partGroups.scss";
 import DataTable from "../../components/dataTable/DataTable";
 import Add from "../../components/add/Add";
-
 import { GridColDef } from "@mui/x-data-grid";
-// import { partGroups } from "../../data";
-// import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-// import AddPartGroups from "../../components/addPartGroups/AddPartGroups";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
@@ -40,11 +36,11 @@ const columns: GridColDef[] = [
   },
 ];
 
-const PartGroups = () => {
+const partGroups = () => {
   const [open, setOpen] = useState(false);
   const slug = {
     title: "partGroups",
-    route: "createPartGroup",
+    route: "createpartGroup",
     single: "partGroup",
   };
 
@@ -58,7 +54,7 @@ const PartGroups = () => {
   //   formData.append("title", title);
 
   //   const result = await axios.post(
-  //     "http://localhost:8080/createPartGroup",
+  //     "http://localhost:8080/createpartGroup",
   //     formData,
   //     {
   //       headers: { "Content-Type": "multipart/form-data" },
@@ -76,13 +72,13 @@ const PartGroups = () => {
       ),
   });
   // console.log(import.meta.env.VITE_APP_URL);
-  console.log(data, "this is partGroups");
+  // console.log(data, "this is partGroups");
 
   return (
     <div className="partGroups">
       <div className="info">
-        <h1>PartGroups</h1>
-        <button onClick={() => setOpen(true)}>Add New PartGroups</button>
+        <h1>partGroups</h1>
+        <button onClick={() => setOpen(true)}>Add New partGroups</button>
       </div>
       {/* <DataTable slug="partGroups" columns={columns} rows={partGroups} /> */}
       {/* TEST THE API */}
@@ -95,6 +91,7 @@ const PartGroups = () => {
           columns={columns}
           rows={data}
           parallelDataSet="partnames"
+          materials={undefined}
         />
       )}
       {open && (
@@ -107,15 +104,15 @@ const PartGroups = () => {
         />
       )}
       {/* {open && (
-        <AddPartGroups
+        <AddpartGroups
           slug={slug}
           columns={columns}
           setOpen={setOpen}
-          parallelDataSet="subPartGroups"
+          parallelDataSet="subpartGroups"
         />
       )} */}
     </div>
   );
 };
 
-export default PartGroups;
+export default partGroups;

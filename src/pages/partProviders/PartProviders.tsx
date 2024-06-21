@@ -1,11 +1,10 @@
 import { useState } from "react";
-import "./PartProviders.scss";
+import "./partProviders.scss";
 import DataTable from "../../components/dataTable/DataTable";
-import Add from "../../components/add/Add";
 import { GridColDef } from "@mui/x-data-grid";
-// import { partProviders } from "../../data";
 import { useQuery } from "@tanstack/react-query";
-
+import axios from "axios";
+import AddPartProviders from "../../components/add/AddPartProviders";
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
   {
@@ -20,38 +19,7 @@ const columns: GridColDef[] = [
     field: "name",
     type: "text",
     headerName: "Name",
-    width: 250,
-  },
-
-  {
-    field: "link",
-    headerName: "Link",
     width: 150,
-    type: "text",
-  },
-  {
-    field: "email",
-    headerName: "Email",
-    width: 150,
-    type: "text",
-  },
-  {
-    field: "lat",
-    headerName: "Lat",
-    width: 150,
-    type: "number",
-  },
-  {
-    field: "lng",
-    headerName: "Lng",
-    width: 150,
-    type: "number",
-  },
-  {
-    field: "description",
-    headerName: "Description",
-    width: 150,
-    type: "text",
   },
   {
     field: "phone",
@@ -60,32 +28,119 @@ const columns: GridColDef[] = [
     type: "number",
   },
   {
-    field: "partgeneralids",
-    headerName: "partsGeneralIds",
+    field: "link",
+    headerName: "Link",
     width: 150,
+    type: "text",
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    width: 150,
+    type: "text",
+  },
+  {
+    field: "address",
+    headerName: "Address",
+    width: 150,
+    type: "text",
+  },
+  {
+    field: "email",
+    headerName: "Email",
+    width: 150,
+    type: "email",
+  },
+  {
+    field: "export_destination",
+    type: "text",
+    headerName: "export_destination",
+    width: 150,
+  },
+
+  {
+    field: "production_type",
+    type: "dropdown",
+    headerName: "production_type",
+    width: 150,
+  },
+
+  {
+    field: "score",
+    headerName: "score",
+    width: 150,
+    type: "number",
+  },
+  {
+    field: "establish_year",
+    headerName: "establish_year",
+    width: 150,
+    type: "number",
+  },
+  {
+    field: "production_volume",
+    headerName: "production_volume",
+    width: 150,
+    type: "number",
+  },
+  {
+    field: "cooperation_length",
+    headerName: "cooperation_length",
+    width: 150,
+    type: "number",
+  },
+  {
+    field: "has_export",
+    type: "checkbox",
+    headerName: "has_export",
+    width: 150,
+  },
+  {
+    field: "knowledge_based",
+    type: "checkbox",
+    headerName: "knowledge_based",
+    width: 150,
+  },
+
+  {
+    field: "partgeneralids",
+    headerName: "partGeneralIds",
+    width: 200,
     type: "options",
   },
   {
     field: "partnames",
     headerName: "partNames",
-    width: 150,
+    width: 200,
     type: "options",
   },
   {
     field: "partgroups",
     headerName: "partGroups",
-    width: 150,
+    width: 200,
     type: "options",
+  },
+  {
+    field: "BTN",
+    headerName: "BTN",
+    width: 150,
+    type: "button",
+  },
+  {
+    field: "Record",
+    headerName: "Record",
+    width: 150,
+    type: "record",
   },
 ];
 
-const PartProviders = () => {
+const partProviders = () => {
   const [open, setOpen] = useState(false);
 
   const slug = {
     title: "partProviders",
     route: "createPartProvider",
-    single: "partProvider",
+    single: "PartProvider",
   };
   const parallelDataSets: any = [
     {
@@ -95,10 +150,29 @@ const PartProviders = () => {
       title: "partNames",
     },
     {
-      title: "partsGeneralIds",
+      title: "partGeneralIds",
     },
   ];
-  // TEST THE API
+  const parallelDataSetsHandler = async () => {
+    try {
+      const res = await Promise.all([
+        axios.get(`${import.meta.env.VITE_APP_URL}/partGroups`),
+        axios.get(`${import.meta.env.VITE_APP_URL}/partNames`),
+        axios.get(`${import.meta.env.VITE_APP_URL}/partGeneralIds`),
+      ]);
+      const data = res.map((res) => res.data);
+      return data;
+    } catch {
+      throw Error("Promise failed");
+    }
+  };
+
+  if (parallelDataSets !== "") {
+    var { data: parts } = useQuery({
+      queryKey: ["getParallel"],
+      queryFn: () => parallelDataSetsHandler(),
+    });
+  }
 
   const { isLoading, data } = useQuery({
     queryKey: ["partProviders"],
@@ -107,15 +181,14 @@ const PartProviders = () => {
         res.json()
       ),
   });
+  console.log(data, "Data");
 
   return (
     <div className="partProviders">
       <div className="info">
-        <h1>PartProviders</h1>
+        <h1>partProviders</h1>
         <button onClick={() => setOpen(true)}>Add New PartProvider</button>
       </div>
-      {/* <DataTable slug="partProviders" columns={columns} rows={partProviders} /> */}
-      {/* TEST THE API */}
 
       {isLoading ? (
         "Loading..."
@@ -124,20 +197,22 @@ const PartProviders = () => {
           slug={slug}
           columns={columns}
           rows={data}
-          parallelDataSet="partgeneralids"
+          parallelDataSet="partGeneralIds"
+          parts={parts}
+          materials={undefined}
         />
       )}
       {open && (
-        <Add
+        <AddPartProviders
           slug={slug}
           columns={columns}
           setOpen={setOpen}
-          parallelDataSet=""
           parallelDataSets={parallelDataSets}
+          parts={parts}
         />
       )}
     </div>
   );
 };
 
-export default PartProviders;
+export default partProviders;

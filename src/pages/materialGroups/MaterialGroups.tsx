@@ -2,12 +2,8 @@ import { useState } from "react";
 import "./MaterialGroups.scss";
 import DataTable from "../../components/dataTable/DataTable";
 import Add from "../../components/add/Add";
-
 import { GridColDef } from "@mui/x-data-grid";
-// import { materialGroups } from "../../data";
-// import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-// import AddMaterialGroups from "../../components/addMaterialGroups/AddMaterialGroups";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
@@ -95,6 +91,7 @@ const MaterialGroups = () => {
           columns={columns}
           rows={data}
           parallelDataSet="materialnames"
+          materials={undefined}
         />
       )}
       {open && (

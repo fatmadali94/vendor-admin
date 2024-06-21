@@ -1,9 +1,8 @@
 import { useState } from "react";
-import "./PartGeneralIds.scss";
+import "./partGeneralIds.scss";
 import DataTable from "../../components/dataTable/DataTable";
 import Add from "../../components/add/Add";
 import { GridColDef } from "@mui/x-data-grid";
-// import { partGeneralIds } from "../../data";
 import { useQuery } from "@tanstack/react-query";
 
 const columns: GridColDef[] = [
@@ -36,12 +35,6 @@ const columns: GridColDef[] = [
     width: 150,
     type: "options",
   },
-  // {
-  //   field: "partproviders",
-  //   headerName: "partproviders",
-  //   width: 150,
-  //   type: "options",
-  // },
   {
     field: "createdAt",
     headerName: "Created At",
@@ -50,20 +43,20 @@ const columns: GridColDef[] = [
   },
 ];
 
-const PartGeneralIds = () => {
+const partGeneralIds = () => {
   const [open, setOpen] = useState(false);
 
   const slug = {
-    title: "partsGeneralIds",
-    route: "createPartGeneralId",
+    title: "partGeneralIds",
+    route: "createpartGeneralId",
     single: "partGeneralId",
   };
   // TEST THE API
 
   const { isLoading, data } = useQuery({
-    queryKey: ["partsGeneralIds"],
+    queryKey: ["partGeneralIds"],
     queryFn: () =>
-      fetch(`${import.meta.env.VITE_APP_URL}partsGeneralIds`).then((res) =>
+      fetch(`${import.meta.env.VITE_APP_URL}partGeneralIds`).then((res) =>
         res.json()
       ),
   });
@@ -71,8 +64,8 @@ const PartGeneralIds = () => {
   return (
     <div className="partGeneralIds">
       <div className="info">
-        <h1>PartGeneralIds</h1>
-        <button onClick={() => setOpen(true)}>Add New PartGeneralId</button>
+        <h1>partGeneralIds</h1>
+        <button onClick={() => setOpen(true)}>Add New partGeneralId</button>
       </div>
       {/* <DataTable slug="partGeneralIds" columns={columns} rows={partGeneralIds} /> */}
       {/* TEST THE API */}
@@ -85,6 +78,8 @@ const PartGeneralIds = () => {
           columns={columns}
           rows={data}
           parallelDataSet="partnames"
+          materials={undefined}
+          parts={undefined}
         />
       )}
       {open && (
@@ -92,7 +87,7 @@ const PartGeneralIds = () => {
           slug={slug}
           columns={columns}
           setOpen={setOpen}
-          parallelDataSet="partnames"
+          parallelDataSet="partGeneralId"
           parallelDataSets=""
         />
       )}
@@ -100,4 +95,4 @@ const PartGeneralIds = () => {
   );
 };
 
-export default PartGeneralIds;
+export default partGeneralIds;

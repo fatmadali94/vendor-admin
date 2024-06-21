@@ -15,6 +15,12 @@ export const menu = [
         url: "/messages",
         icon: "user.svg",
       },
+      {
+        id: 3,
+        title: "Offers",
+        url: "/offers",
+        icon: "product.svg",
+      },
     ],
   },
   {
