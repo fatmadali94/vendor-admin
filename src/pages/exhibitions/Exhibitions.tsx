@@ -77,6 +77,7 @@ const Exhibitions = () => {
           rows={data}
           parallelDataSet="exhibitions"
           materials={undefined}
+          parts={undefined}
         />
       )}
       {open && (

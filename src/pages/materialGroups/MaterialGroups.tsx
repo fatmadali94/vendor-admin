@@ -92,6 +92,7 @@ const MaterialGroups = () => {
           rows={data}
           parallelDataSet="materialnames"
           materials={undefined}
+          parts={undefined}
         />
       )}
       {open && (

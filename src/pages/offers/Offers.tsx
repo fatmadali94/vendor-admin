@@ -89,6 +89,7 @@ const Offers = () => {
           rows={data}
           parallelDataSet="offers"
           materials={undefined}
+          parts={undefined}
         />
       )}
     </div>

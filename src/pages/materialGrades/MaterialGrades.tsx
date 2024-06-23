@@ -80,6 +80,7 @@ const MaterialGrades = () => {
           rows={data}
           parallelDataSet="materialnames"
           materials={undefined}
+          parts={undefined}
         />
       )}
       {open && (
