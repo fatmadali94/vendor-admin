@@ -140,7 +140,7 @@ const partProviders = () => {
   const slug = {
     title: "partProviders",
     route: "createPartProvider",
-    single: "PartProvider",
+    single: "partProvider",
   };
   const parallelDataSets: any = [
     {
@@ -181,7 +181,6 @@ const partProviders = () => {
         res.json()
       ),
   });
-  console.log(data, "Data");
 
   return (
     <div className="partProviders">

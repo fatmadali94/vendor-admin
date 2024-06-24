@@ -1,9 +1,10 @@
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import "./dataTable.scss";
-// import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Update from "../update/Update";
+import UpdateMaterialProvider from "../update/UpdateMaterialProvider";
+import UpdatePartProvider from "../update/UpdatePartProvider";
 
 type Props = {
   columns: GridColDef[];
@@ -19,6 +20,8 @@ const DataTable = (props: Props) => {
   const [row, setRow] = useState({});
 
   const { materials, parts } = props;
+  const isPart = !!parts;
+  const isMaterial = !!materials;
 
   const newRows =
     props.rows.length > 0 && materials
@@ -55,34 +58,34 @@ const DataTable = (props: Props) => {
         })
       : props.rows.length > 0 && parts
       ? props.rows.map((row) => {
-          let materialgrades = "";
-          let materialnames = "";
-          let materialgroups = "";
+          let partgeneralids = "";
+          let partnames = "";
+          let partgroups = "";
 
           if (row.records && row.records.length > 0) {
             row.records.forEach(
               (record: {
-                materialgrade: { title: string };
-                materialname: { title: string };
-                materialgroup: { title: string };
+                partgeneralid: { title: string };
+                partname: { title: string };
+                partgroup: { title: string };
               }) => {
-                if (record.materialgrade && record.materialgrade.title) {
-                  materialgrades += record.materialgrade.title + ", ";
+                if (record.partgeneralid && record.partgeneralid.title) {
+                  partgeneralids += record.partgeneralid.title + ", ";
                 }
-                if (record.materialname && record.materialname.title) {
-                  materialnames += record.materialname.title + ", ";
+                if (record.partname && record.partname.title) {
+                  partnames += record.partname.title + ", ";
                 }
-                if (record.materialgroup && record.materialgroup.title) {
-                  materialgroups += record.materialgroup.title + ", ";
+                if (record.partgroup && record.partgroup.title) {
+                  partgroups += record.partgroup.title + ", ";
                 }
               }
             );
           }
           return {
             ...row,
-            materialgrades, // Append concatenated material grade titles
-            materialnames, // Append concatenated material name titles
-            materialgroups, // Append concatenated material group titles
+            partgeneralids, // Append concatenated material grade titles
+            partnames, // Append concatenated material name titles
+            partgroups, // Append concatenated material group titles
           };
         })
       : props.rows;
@@ -184,16 +187,35 @@ const DataTable = (props: Props) => {
         disableDensitySelector
         disableColumnSelector
       />
-      {open && (
-        <Update
-          slug={props.slug}
-          columns={props.columns}
-          setOpen={setOpen}
-          parallelDataSet={props.parallelDataSet}
-          row={row || []}
-          materials={materials}
-        />
-      )}
+      {open &&
+        (isMaterial ? (
+          <UpdateMaterialProvider
+            slug={props.slug}
+            columns={props.columns}
+            setOpen={setOpen}
+            parallelDataSet={props.parallelDataSet}
+            row={row || []}
+            materials={materials}
+          />
+        ) : isPart ? (
+          <UpdatePartProvider
+            slug={props.slug}
+            columns={props.columns}
+            setOpen={setOpen}
+            parallelDataSet={props.parallelDataSet}
+            row={row || []}
+            parts={parts}
+          />
+        ) : (
+          <Update
+            slug={props.slug}
+            columns={props.columns}
+            setOpen={setOpen}
+            parallelDataSet={props.parallelDataSet}
+            row={row || []}
+            materials={materials}
+          />
+        ))}
     </div>
   );
 };

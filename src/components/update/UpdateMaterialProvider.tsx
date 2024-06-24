@@ -35,7 +35,7 @@ interface selections {
   materialgroup: any;
 }
 
-const Update = (props: Props) => {
+const UpdateMaterialProvider = (props: Props) => {
   const { row, materials } = props;
   const [formData, setFormData] = useState({ records: row.records || [] });
   const [image, setImage] = useState<any>();
@@ -136,7 +136,7 @@ const Update = (props: Props) => {
 
   const handleDelete = (id: any) => {
     const updatedRecords = formData.records.filter(
-      (record: any) => record._id !== id
+      (record: any) => record?._id !== id
     );
     setFormData({
       ...formData,
@@ -237,7 +237,7 @@ const Update = (props: Props) => {
                           <label>Material Name</label>
                           <select
                             value={
-                              record.materialname._id || record.materialname
+                              record?.materialname?._id || record?.materialname
                             }
                             onChange={(e) =>
                               handleInputChange(
@@ -260,7 +260,8 @@ const Update = (props: Props) => {
                           <label>Material Grade</label>
                           <select
                             value={
-                              record.materialgrade._id || record.materialgrade
+                              record?.materialgrade?._id ||
+                              record?.materialgrade
                             }
                             onChange={(e) =>
                               handleInputChange(
@@ -284,7 +285,8 @@ const Update = (props: Props) => {
                           <label>Material Group</label>
                           <select
                             value={
-                              record.materialgroup._id || record.materialgroup
+                              record?.materialgroup?._id ||
+                              record?.materialgroup
                             }
                             onChange={(e) =>
                               handleInputChange(
@@ -303,7 +305,7 @@ const Update = (props: Props) => {
                           <button
                             onClick={(e) => {
                               e.preventDefault();
-                              handleDelete(record._id);
+                              handleDelete(record?._id);
                             }}
                             style={{
                               backgroundColor: "red",
@@ -363,6 +365,11 @@ const Update = (props: Props) => {
                 }
 
                 case "checkbox": {
+                  const isChecked =
+                    body[column.field] !== undefined
+                      ? body[column.field]
+                      : row[column.field];
+
                   return (
                     <div className="item" key={index}>
                       <label>{column.headerName}</label>
@@ -371,11 +378,7 @@ const Update = (props: Props) => {
                         type={column.type}
                         placeholder={column.field}
                         onChange={updateData}
-                        checked={
-                          column.field === "has_export" || "knowledge_based"
-                            ? true
-                            : false
-                        }
+                        checked={!!isChecked}
                       />
                     </div>
                   );
@@ -458,4 +461,4 @@ const Update = (props: Props) => {
   );
 };
 
-export default Update;
+export default UpdateMaterialProvider;

@@ -181,7 +181,6 @@ const MaterialProviders = () => {
         res.json()
       ),
   });
-  console.log(data, "Data");
 
   return (
     <div className="materialProviders">

@@ -15,7 +15,7 @@ type Props = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   parallelDataSet: string;
   row: any;
-  materials: any;
+  parts: any;
 };
 
 interface DropdownOption {
@@ -24,31 +24,32 @@ interface DropdownOption {
 }
 
 interface DropdownOptions {
-  materialNames: DropdownOption[];
-  materialGrades: DropdownOption[];
-  materialGroups: DropdownOption[];
+  partNames: DropdownOption[];
+  partGeneralIds: DropdownOption[];
+  partGroups: DropdownOption[];
 }
 
 interface selections {
-  materialgrade: any;
-  materialname: any;
-  materialgroup: any;
+  partGeneralId: any;
+  partname: any;
+  partGroup: any;
 }
 
-const Update = (props: Props) => {
-  const { row, materials } = props;
+const UpdatePartProvider = (props: Props) => {
+  const { row, parts } = props;
+
   const [formData, setFormData] = useState({ records: row.records || [] });
   const [image, setImage] = useState<any>();
   const [dropdownOptions, setDropdownOptions] = useState<DropdownOptions>({
-    materialNames: [],
-    materialGrades: [],
-    materialGroups: [],
+    partNames: [],
+    partGeneralIds: [],
+    partGroups: [],
   });
 
   const [selections, setSelections] = useState<selections>({
-    materialgrade: {},
-    materialgroup: {},
-    materialname: {},
+    partGeneralId: {},
+    partGroup: {},
+    partname: {},
   });
   const [reset, setReset] = useState(false);
 
@@ -62,14 +63,14 @@ const Update = (props: Props) => {
     const fetchDropdownOptions = async () => {
       try {
         const responses = await Promise.all([
-          axios.get(`${import.meta.env.VITE_APP_URL}/materialNames`),
-          axios.get(`${import.meta.env.VITE_APP_URL}/materialGrades`),
-          axios.get(`${import.meta.env.VITE_APP_URL}/materialGroups`),
+          axios.get(`${import.meta.env.VITE_APP_URL}/partNames`),
+          axios.get(`${import.meta.env.VITE_APP_URL}/partGeneralIds`),
+          axios.get(`${import.meta.env.VITE_APP_URL}/partGroups`),
         ]);
         setDropdownOptions({
-          materialNames: responses[0].data,
-          materialGrades: responses[1].data,
-          materialGroups: responses[2].data,
+          partNames: responses[0].data,
+          partGeneralIds: responses[1].data,
+          partGroups: responses[2].data,
         });
       } catch (error) {
         console.error("Failed to fetch dropdown options:", error);
@@ -81,7 +82,7 @@ const Update = (props: Props) => {
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await axios.patch(
-        `${import.meta.env.VITE_APP_URL}/materialProvider/${row._id}`,
+        `${import.meta.env.VITE_APP_URL}/partProvider/${row._id}`,
         data
       );
       return response.data;
@@ -136,7 +137,7 @@ const Update = (props: Props) => {
 
   const handleDelete = (id: any) => {
     const updatedRecords = formData.records.filter(
-      (record: any) => record._id !== id
+      (record: any) => record?._id !== id
     );
     setFormData({
       ...formData,
@@ -234,20 +235,18 @@ const Update = (props: Props) => {
                         <div
                           style={{ display: "flex", flexDirection: "column" }}
                         >
-                          <label>Material Name</label>
+                          <label>Part Name</label>
                           <select
-                            value={
-                              record.materialname._id || record.materialname
-                            }
+                            value={record.partname?._id || record.partname}
                             onChange={(e) =>
                               handleInputChange(
                                 index,
-                                "materialname",
+                                "partname",
                                 e.target.value
                               )
                             }
                           >
-                            {dropdownOptions.materialNames.map((option) => (
+                            {dropdownOptions.partNames.map((option) => (
                               <option key={option._id} value={option._id}>
                                 {option.title}
                               </option>
@@ -257,20 +256,20 @@ const Update = (props: Props) => {
                         <div
                           style={{ display: "flex", flexDirection: "column" }}
                         >
-                          <label>Material Grade</label>
+                          <label>Part General Id</label>
                           <select
                             value={
-                              record.materialgrade._id || record.materialgrade
+                              record.partgeneralid?._id || record.partgeneralid
                             }
                             onChange={(e) =>
                               handleInputChange(
                                 index,
-                                "materialgrade",
+                                "partgeneralid",
                                 e.target.value
                               )
                             }
                           >
-                            {dropdownOptions.materialGrades.map((option) => (
+                            {dropdownOptions.partGeneralIds.map((option) => (
                               <option key={option._id} value={option._id}>
                                 {option.title}
                               </option>
@@ -281,20 +280,18 @@ const Update = (props: Props) => {
                         <div
                           style={{ display: "flex", flexDirection: "column" }}
                         >
-                          <label>Material Group</label>
+                          <label>Part Group</label>
                           <select
-                            value={
-                              record.materialgroup._id || record.materialgroup
-                            }
+                            value={record.partgroup?._id || record.partgroup}
                             onChange={(e) =>
                               handleInputChange(
                                 index,
-                                "materialgroup",
+                                "partgroup",
                                 e.target.value
                               )
                             }
                           >
-                            {dropdownOptions.materialGroups.map((option) => (
+                            {dropdownOptions.partGroups.map((option) => (
                               <option key={option._id} value={option._id}>
                                 {option.title}
                               </option>
@@ -303,7 +300,7 @@ const Update = (props: Props) => {
                           <button
                             onClick={(e) => {
                               e.preventDefault();
-                              handleDelete(record._id);
+                              handleDelete(record?._id);
                             }}
                             style={{
                               backgroundColor: "red",
@@ -363,6 +360,11 @@ const Update = (props: Props) => {
                 }
 
                 case "checkbox": {
+                  const isChecked =
+                    body[column.field] !== undefined
+                      ? body[column.field]
+                      : row[column.field];
+
                   return (
                     <div className="item" key={index}>
                       <label>{column.headerName}</label>
@@ -371,11 +373,7 @@ const Update = (props: Props) => {
                         type={column.type}
                         placeholder={column.field}
                         onChange={updateData}
-                        checked={
-                          column.field === "has_export" || "knowledge_based"
-                            ? true
-                            : false
-                        }
+                        checked={!!isChecked}
                       />
                     </div>
                   );
@@ -422,30 +420,28 @@ const Update = (props: Props) => {
               }
             })}
           <div className="item">
-            <label>Material Group</label>
-            {materials && materials[0] && (
+            <label>Part Group</label>
+            {parts && parts[0] && (
               <CustomDropdown
-                options={materials[0]}
-                onSelect={(option: any) =>
-                  handleSelect("materialgroup", option)
-                }
+                options={parts[0]}
+                onSelect={(option: any) => handleSelect("partgroup", option)}
                 reset={reset}
               />
             )}
-            <label>Material Name</label>
-            {materials && materials[1] && (
+            <label>Part Name</label>
+            {parts && parts[1] && (
               <CustomDropdown
-                options={materials[1]}
-                onSelect={(option: any) => handleSelect("materialname", option)}
+                options={parts[1]}
+                onSelect={(option: any) => handleSelect("partname", option)}
                 reset={reset}
               />
             )}
-            <label>Material Grade</label>
-            {materials && materials[2] && (
+            <label>Part general id </label>
+            {parts && parts[2] && (
               <CustomDropdown
-                options={materials[2]}
+                options={parts[2]}
                 onSelect={(option: any) =>
-                  handleSelect("materialgrade", option)
+                  handleSelect("partgeneralid", option)
                 }
                 reset={reset}
               />
@@ -458,4 +454,4 @@ const Update = (props: Props) => {
   );
 };
 
-export default Update;
+export default UpdatePartProvider;
