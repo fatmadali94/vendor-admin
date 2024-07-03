@@ -57,8 +57,6 @@ const Exhibitions = () => {
       ),
   });
 
-  console.log(data);
-
   return (
     <div className="exhibitions">
       <div className="info">

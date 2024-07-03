@@ -60,7 +60,6 @@ const MaterialNames = () => {
         res.json()
       ),
   });
-  console.log(data, "this is material names");
 
   return (
     <div className="materialNames">

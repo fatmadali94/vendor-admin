@@ -46,7 +46,6 @@ const AddMaterialProviders = (props: Props) => {
   const [displaySubmission, setDisplaySubmission] = useState<
     displaySubmission[]
   >([]);
-  console.log(body, "body");
 
   const createItem = async (body: any) => {
     return axios

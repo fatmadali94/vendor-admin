@@ -49,7 +49,7 @@ const partNames = () => {
   const slug = {
     title: "partNames",
     route: "createPartName",
-    single: "partNames",
+    single: "partName",
   };
   // TEST THE API
 
@@ -60,7 +60,6 @@ const partNames = () => {
         res.json()
       ),
   });
-  console.log(data, "this is part names");
 
   return (
     <div className="partNames">

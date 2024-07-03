@@ -29,7 +29,6 @@ const Login = () => {
     mutationFn: login,
     onSuccess: (data) => {
       console.log(data, "this is the result of success");
-
       logInSuccess(data);
     },
   });

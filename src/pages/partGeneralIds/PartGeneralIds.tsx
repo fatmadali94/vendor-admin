@@ -15,14 +15,12 @@ const columns: GridColDef[] = [
       return <img src={params.row.image?.url || "/noavatar.png"} alt="" />;
     },
   },
-
   {
     field: "title",
     type: "text",
     headerName: "title",
     width: 150,
   },
-
   {
     field: "description",
     headerName: "Description",
@@ -45,14 +43,11 @@ const columns: GridColDef[] = [
 
 const partGeneralIds = () => {
   const [open, setOpen] = useState(false);
-
   const slug = {
     title: "partGeneralIds",
     route: "createpartGeneralId",
     single: "partGeneralId",
   };
-  // TEST THE API
-
   const { isLoading, data } = useQuery({
     queryKey: ["partGeneralIds"],
     queryFn: () =>

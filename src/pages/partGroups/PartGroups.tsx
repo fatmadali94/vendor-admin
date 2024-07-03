@@ -71,8 +71,6 @@ const partGroups = () => {
         res.json()
       ),
   });
-  // console.log(import.meta.env.VITE_APP_URL);
-  // console.log(data, "this is partGroups");
 
   return (
     <div className="partGroups">
@@ -80,8 +78,6 @@ const partGroups = () => {
         <h1>partGroups</h1>
         <button onClick={() => setOpen(true)}>Add New partGroups</button>
       </div>
-      {/* <DataTable slug="partGroups" columns={columns} rows={partGroups} /> */}
-      {/* TEST THE API */}
 
       {isLoading ? (
         "Loading..."

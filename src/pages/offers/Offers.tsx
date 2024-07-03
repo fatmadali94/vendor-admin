@@ -72,8 +72,6 @@ const Offers = () => {
       fetch(`${import.meta.env.VITE_APP_URL}offers`).then((res) => res.json()),
   });
 
-  console.log(data, "data");
-
   return (
     <div className="exhibitions">
       <div className="info">

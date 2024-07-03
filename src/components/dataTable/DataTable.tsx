@@ -110,6 +110,7 @@ const DataTable = (props: Props) => {
   const handleDelete = (id: any) => {
     mutation.mutate(id);
   };
+
   const handleUpdate = (row: any) => {
     setOpen(true);
     setRow(row);
