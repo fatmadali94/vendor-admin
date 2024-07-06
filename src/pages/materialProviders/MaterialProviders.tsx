@@ -25,7 +25,7 @@ const columns: GridColDef[] = [
     field: "phone",
     headerName: "Phone",
     width: 150,
-    type: "number",
+    type: "text",
   },
   {
     field: "link",

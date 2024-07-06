@@ -81,7 +81,7 @@ const UpdateMaterialProvider = (props: Props) => {
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await axios.patch(
-        `${import.meta.env.VITE_APP_URL}/materialProvider/${row._id}`,
+        `${import.meta.env.VITE_APP_URL}materialProvider/${row._id}`,
         data
       );
       return response.data;
