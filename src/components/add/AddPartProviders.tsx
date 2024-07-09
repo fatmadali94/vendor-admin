@@ -112,6 +112,11 @@ const AddPartProviders = (props: Props) => {
         partname: selections.partname.title,
       },
     ]);
+    setSelections({
+      partgroup: {},
+      partname: {},
+      partgeneralid: {},
+    });
     setReset(true);
   };
 

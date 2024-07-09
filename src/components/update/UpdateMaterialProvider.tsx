@@ -29,10 +29,8 @@ interface DropdownOptions {
   materialGroups: DropdownOption[];
 }
 
-interface selections {
-  materialgrade: any;
-  materialname: any;
-  materialgroup: any;
+interface Selections {
+  [key: string]: any;
 }
 
 const UpdateMaterialProvider = (props: Props) => {
@@ -45,18 +43,17 @@ const UpdateMaterialProvider = (props: Props) => {
     materialGroups: [],
   });
 
-  const [selections, setSelections] = useState<selections>({
-    materialgrade: {},
-    materialgroup: {},
-    materialname: {},
-  });
+  const [selections, setSelections] = useState<Selections>({});
   const [reset, setReset] = useState(false);
-
   const [body, setBody] = useState<any>({});
-
   const queryClient = useQueryClient();
-
   const defaultImage = "/default-provider-image.png";
+
+  useEffect(() => {
+    if (reset) {
+      setReset(false);
+    }
+  }, [reset]);
 
   useEffect(() => {
     const fetchDropdownOptions = async () => {
@@ -92,35 +89,6 @@ const UpdateMaterialProvider = (props: Props) => {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const submitData = {
-      ...formData,
-      ...body,
-      image,
-    };
-
-    mutation.mutate(submitData);
-  };
-
-  const handleInputChange = (index: number, field: string, value: string) => {
-    const updatedRecords = formData.records.map((record: any, idx: any) => {
-      if (idx === index) {
-        return { ...record, [field]: value };
-      }
-      return record;
-    });
-    setFormData({ ...formData, records: updatedRecords });
-  };
-
-  const updateData = (e: any) => {
-    const { name, type, checked, value } = e.target;
-    setBody((prevBody: any) => ({
-      ...prevBody,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
   const handleImageSelect = (e: any) => {
     const file = e.target.files[0];
     setFileToBase(file);
@@ -144,19 +112,34 @@ const UpdateMaterialProvider = (props: Props) => {
     });
   };
 
-  const handleSelect = (dropdownName: any, selectedOption: any) => {
-    setSelections((prevState) => ({
-      ...prevState,
+  // INPUTS ON CHANGE
+  const updateData = (e: any) => {
+    const { name, type, checked, value } = e.target;
+    setBody((prevBody: any) => ({
+      ...prevBody,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // HANDLES THE CHANGE OF RECORD INPUTS
+  const handleRecordsChange = (index: number, field: string, value: string) => {
+    const updatedRecords = formData.records.map((record: any, idx: any) => {
+      if (idx === index) {
+        return { ...record, [field]: value };
+      }
+      return record;
+    });
+    setFormData({ ...formData, records: updatedRecords });
+  };
+
+  // HANDLES NEW RECORD INPUT CHANGE
+  const handleNewRecordChange = (dropdownName: any, selectedOption: any) => {
+    setSelections((_prevState: any) => ({
       [dropdownName]: selectedOption,
     }));
   };
 
-  useEffect(() => {
-    if (reset) {
-      setReset(false);
-    }
-  }, [reset]);
-
+  // NEW RECORD SUBMIT BUTTON
   const buttonClickHandler = (event: any) => {
     event.preventDefault();
     setFormData({
@@ -164,6 +147,17 @@ const UpdateMaterialProvider = (props: Props) => {
       records: [...formData.records, selections], // Append the new object to the array
     });
     setReset(true);
+  };
+
+  // FORM SUBMISSION
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const submitData = {
+      ...formData,
+      ...body,
+      image,
+    };
+    mutation.mutate(submitData);
   };
 
   return (
@@ -240,13 +234,14 @@ const UpdateMaterialProvider = (props: Props) => {
                               record?.materialname?._id || record?.materialname
                             }
                             onChange={(e) =>
-                              handleInputChange(
+                              handleRecordsChange(
                                 index,
                                 "materialname",
                                 e.target.value
                               )
                             }
                           >
+                            <option value="">انتخاب</option>
                             {dropdownOptions.materialNames.map((option) => (
                               <option key={option._id} value={option._id}>
                                 {option.title}
@@ -264,13 +259,14 @@ const UpdateMaterialProvider = (props: Props) => {
                               record?.materialgrade
                             }
                             onChange={(e) =>
-                              handleInputChange(
+                              handleRecordsChange(
                                 index,
                                 "materialgrade",
                                 e.target.value
                               )
                             }
                           >
+                            <option value="">انتخاب</option>
                             {dropdownOptions.materialGrades.map((option) => (
                               <option key={option._id} value={option._id}>
                                 {option.title}
@@ -289,13 +285,15 @@ const UpdateMaterialProvider = (props: Props) => {
                               record?.materialgroup
                             }
                             onChange={(e) =>
-                              handleInputChange(
+                              handleRecordsChange(
                                 index,
                                 "materialgroup",
                                 e.target.value
                               )
                             }
                           >
+                            <option value="">انتخاب</option>
+
                             {dropdownOptions.materialGroups.map((option) => (
                               <option key={option._id} value={option._id}>
                                 {option.title}
@@ -430,7 +428,7 @@ const UpdateMaterialProvider = (props: Props) => {
               <CustomDropdown
                 options={materials[0]}
                 onSelect={(option: any) =>
-                  handleSelect("materialgroup", option)
+                  handleNewRecordChange("materialgroup", option)
                 }
                 reset={reset}
               />
@@ -439,7 +437,9 @@ const UpdateMaterialProvider = (props: Props) => {
             {materials && materials[1] && (
               <CustomDropdown
                 options={materials[1]}
-                onSelect={(option: any) => handleSelect("materialname", option)}
+                onSelect={(option: any) =>
+                  handleNewRecordChange("materialname", option)
+                }
                 reset={reset}
               />
             )}
@@ -448,7 +448,7 @@ const UpdateMaterialProvider = (props: Props) => {
               <CustomDropdown
                 options={materials[2]}
                 onSelect={(option: any) =>
-                  handleSelect("materialgrade", option)
+                  handleNewRecordChange("materialgrade", option)
                 }
                 reset={reset}
               />

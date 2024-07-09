@@ -111,6 +111,11 @@ const AddMaterialProviders = (props: Props) => {
         materialname: selections.materialname.title,
       },
     ]);
+    setSelections({
+      materialgrade: {},
+      materialgroup: {},
+      materialname: {},
+    });
     setReset(true);
   };
 

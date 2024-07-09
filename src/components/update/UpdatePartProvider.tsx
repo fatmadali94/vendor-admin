@@ -29,10 +29,8 @@ interface DropdownOptions {
   partGroups: DropdownOption[];
 }
 
-interface selections {
-  partGeneralId: any;
-  partname: any;
-  partGroup: any;
+interface Selections {
+  [key: string]: any;
 }
 
 const UpdatePartProvider = (props: Props) => {
@@ -46,11 +44,8 @@ const UpdatePartProvider = (props: Props) => {
     partGroups: [],
   });
 
-  const [selections, setSelections] = useState<selections>({
-    partGeneralId: {},
-    partGroup: {},
-    partname: {},
-  });
+  const [selections, setSelections] = useState<Selections>({});
+
   const [reset, setReset] = useState(false);
 
   const [body, setBody] = useState<any>({});
@@ -100,7 +95,6 @@ const UpdatePartProvider = (props: Props) => {
       ...body,
       image,
     };
-
     mutation.mutate(submitData);
   };
 
@@ -146,8 +140,7 @@ const UpdatePartProvider = (props: Props) => {
   };
 
   const handleSelect = (dropdownName: any, selectedOption: any) => {
-    setSelections((prevState) => ({
-      ...prevState,
+    setSelections((_prevState: any) => ({
       [dropdownName]: selectedOption,
     }));
   };
@@ -246,6 +239,7 @@ const UpdatePartProvider = (props: Props) => {
                               )
                             }
                           >
+                            <option value="">انتخاب</option>
                             {dropdownOptions.partNames.map((option) => (
                               <option key={option._id} value={option._id}>
                                 {option.title}
@@ -269,6 +263,7 @@ const UpdatePartProvider = (props: Props) => {
                               )
                             }
                           >
+                            <option value="">انتخاب</option>
                             {dropdownOptions.partGeneralIds.map((option) => (
                               <option key={option._id} value={option._id}>
                                 {option.title}
@@ -291,6 +286,7 @@ const UpdatePartProvider = (props: Props) => {
                               )
                             }
                           >
+                            <option value="">انتخاب</option>
                             {dropdownOptions.partGroups.map((option) => (
                               <option key={option._id} value={option._id}>
                                 {option.title}
