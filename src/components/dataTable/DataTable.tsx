@@ -24,8 +24,8 @@ const DataTable = (props: Props) => {
   const isMaterial = !!materials;
 
   const newRows =
-    props.rows.length > 0 && materials
-      ? props.rows.map((row) => {
+    props?.rows?.length > 0 && materials
+      ? props?.rows?.map((row) => {
           let materialgrades = "";
           let materialnames = "";
           let materialgroups = "";
@@ -56,8 +56,8 @@ const DataTable = (props: Props) => {
             materialgroups, // Append concatenated material group titles
           };
         })
-      : props.rows.length > 0 && parts
-      ? props.rows.map((row) => {
+      : props?.rows?.length > 0 && parts
+      ? props?.rows?.map((row) => {
           let partgeneralids = "";
           let partnames = "";
           let partgroups = "";

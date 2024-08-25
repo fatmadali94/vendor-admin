@@ -25,6 +25,7 @@ import MaterialGroups from "./pages/materialGroups/MaterialGroups";
 import Exhibitions from "./pages/exhibitions/Exhibitions";
 import Messages from "./pages/messages/Messages";
 import Offers from "./pages/offers/Offers";
+import Products from "./pages/products/Products";
 
 const queryClient = new QueryClient();
 
@@ -41,7 +42,6 @@ function App() {
               <Menu />
             </div>
             <div className="contentContainer">
-              {/* {user.currentUser.isAdmin ? <Outlet /> : <Login />} */}
               <Outlet />
             </div>
           </QueryClientProvider>
@@ -112,6 +112,10 @@ function App() {
         {
           path: "/offers",
           element: <Offers />,
+        },
+        {
+          path: "/products",
+          element: <Products />,
         },
         {
           path: "/login",
