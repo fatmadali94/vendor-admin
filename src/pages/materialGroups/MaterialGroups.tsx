@@ -71,8 +71,6 @@ const MaterialGroups = () => {
         res.json()
       ),
   });
-  // console.log(import.meta.env.VITE_APP_URL);
-  // console.log(data, "this is materialGroups");
 
   return (
     <div className="materialGroups">

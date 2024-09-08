@@ -8,7 +8,6 @@ const Menu = () => {
   // const [newOffersCount, setNewOffersCount] = useState(0);
 
   const { data: offers } = useNewOffersCount();
-  // console.log(offers?.length, "New Offers Count");
 
   // useEffect(() => {
   //   if (offers) {

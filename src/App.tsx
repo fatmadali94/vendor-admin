@@ -26,6 +26,8 @@ import Exhibitions from "./pages/exhibitions/Exhibitions";
 import Messages from "./pages/messages/Messages";
 import Offers from "./pages/offers/Offers";
 import Products from "./pages/products/Products";
+import Markets from "./pages/markets/Markets";
+import Resources from "./pages/resources/Resources";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +118,14 @@ function App() {
         {
           path: "/products",
           element: <Products />,
+        },
+        {
+          path: "/resources",
+          element: <Resources />,
+        },
+        {
+          path: "/markets",
+          element: <Markets />,
         },
         {
           path: "/login",
