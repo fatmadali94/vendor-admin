@@ -1,65 +1,73 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
 
-const Login = () => {
-  const history = useNavigate();
-
+const Login = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  async function submit(e) {
+  console.log(import.meta.env.VITE_STATIC_PASS);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    try {
-      await axios
-        .post("http://localhost:8000/", {
-          username,
-          password,
-        })
-        .then((res) => {
-          if (res.data == "exist") {
-            history("/home", { state: { id: username } });
-          } else if (res.data == "notexist") {
-            alert("User have not sign up");
-          }
-        })
-        .catch((e) => {
-          alert("wrong details");
-          console.log(e);
-        });
-    } catch (e) {
-      console.log(e);
+    if (
+      username === import.meta.env.VITE_STATIC_USER &&
+      password === import.meta.env.VITE_STATIC_PASS
+    ) {
+      onLogin();
+      localStorage.setItem("isAuthenticated", "true");
+    } else {
+      setError("Invalid username or password");
     }
-  }
+  };
 
   return (
-    <div className="login">
-      <h1>Login</h1>
-
-      <form action="POST">
-        <input
-          type="text"
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
-          placeholder="Username"
-        />
-        <input
-          type="password"
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-          placeholder="Password"
-        />
-        <input type="submit" onClick={submit} />
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        backgroundImage: `url('/admin-login-back.webp')`, // Add url() around the image path
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: "flex",
+          width: "10rem",
+          flexDirection: "column",
+          gap: "1rem",
+          alignItems: "center",
+          paddingLeft: "1rem",
+        }}
+      >
+        {/* <h2>Login</h2> */}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <div style={{ width: "100%" }}>
+          {/* <label>Username:</label> */}
+          <input
+            type="text"
+            value={username}
+            style={{ height: "2rem", width: "100%" }}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div style={{ width: "100%" }}>
+          {/* <label>Password:</label> */}
+          <input
+            type="password"
+            value={password}
+            style={{ height: "2rem", width: "100%" }}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <button type="submit" style={{ padding: ".5rem 1rem" }}>
+          Login
+        </button>
       </form>
-
-      <br />
-      <p>OR</p>
-      <br />
-
-      <Link to="/signup">Signup Page</Link>
     </div>
   );
 };

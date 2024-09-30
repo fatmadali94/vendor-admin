@@ -1,19 +1,17 @@
+import { useState, useEffect } from "react";
 import Home from "./pages/home/Home";
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-
-// import Products from "./pages/products/Products";
-// import Affiliates from "./pages/affiliates/Affiliates";
-// import Solutions from "./pages/solutions/Solutions";
-
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Outlet,
+  Navigate,
+} from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import Menu from "./components/menu/Menu";
-import Login from "./pages/login/Login";
+import Login from "./components/login/Login";
 import "./styles/global.scss";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-// import { useStore } from "./components/useSignIn/useSignIn";
 import MaterialGrades from "./pages/materialGrades/MaterialGrades";
 import MaterialNames from "./pages/materialNames/MaterialNames";
 import MaterialProviders from "./pages/materialProviders/MaterialProviders";
@@ -32,23 +30,40 @@ import Resources from "./pages/resources/Resources";
 const queryClient = new QueryClient();
 
 function App() {
-  // const user = useStore((state: any) => state.user);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  console.log("isAuthenticated", isAuthenticated);
+  useEffect(() => {
+    const auth = localStorage.getItem("isAuthenticated");
+    if (auth === "true") {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
 
   const Layout = () => {
     return (
       <div className="main">
-        <Navbar />
-        <div className="container">
-          <QueryClientProvider client={queryClient}>
-            <div className="menuContainer">
-              <Menu />
+        {isAuthenticated ? (
+          <>
+            <Navbar />
+            <div className="container">
+              <QueryClientProvider client={queryClient}>
+                <div className="menuContainer">
+                  <Menu />
+                </div>
+                <div className="contentContainer">
+                  <Outlet />
+                </div>
+              </QueryClientProvider>
             </div>
-            <div className="contentContainer">
-              <Outlet />
-            </div>
-          </QueryClientProvider>
-        </div>
-        <Footer />
+            <Footer />
+          </>
+        ) : (
+          <Login onLogin={handleLogin} />
+        )}
       </div>
     );
   };
@@ -129,14 +144,14 @@ function App() {
         },
         {
           path: "/login",
-          element: <Login />,
+          element: <Login onLogin={handleLogin} />,
         },
       ],
     },
-    {
-      path: "/login",
-      element: <Login />,
-    },
+    // {
+    //   path: "/login",
+    //   element: <Login onLogin={handleLogin} />,
+    // },
   ]);
 
   return <RouterProvider router={router} />;
