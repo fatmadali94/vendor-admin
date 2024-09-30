@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./partProviders.scss";
+import "./PartProviders.scss";
 import DataTable from "../../components/dataTable/DataTable";
 import { GridColDef } from "@mui/x-data-grid";
 import { useQuery } from "@tanstack/react-query";
