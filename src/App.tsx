@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
 import Home from "./pages/home/Home";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Outlet,
-  Navigate,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import Menu from "./components/menu/Menu";
@@ -31,7 +26,6 @@ const queryClient = new QueryClient();
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  console.log("isAuthenticated", isAuthenticated);
   useEffect(() => {
     const auth = localStorage.getItem("isAuthenticated");
     if (auth === "true") {
