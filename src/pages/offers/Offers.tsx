@@ -1,6 +1,6 @@
 // import { useState } from "react";
-import "./offers.scss";
-import "./offers.css";
+import "./Offers.scss";
+import "./Offers.css";
 import DataTable from "../../components/dataTable/DataTable";
 // import Add from "../../components/add/Add";
 import { GridColDef } from "@mui/x-data-grid";
