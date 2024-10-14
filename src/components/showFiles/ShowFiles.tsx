@@ -1,8 +1,8 @@
-import React from "react";
+// import React from "react";
 import "./ShowFiles.css";
 import "./ShowFiles.scss";
 
-const pdfDefault = "/pdf-default.png";
+// const pdfDefault = "/pdf-default.png";
 
 const ShowFiles = (props: any) => {
   const { uploadedFiles, setFilesOpen } = props;
