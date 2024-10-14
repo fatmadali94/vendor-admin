@@ -92,6 +92,20 @@ const Update = (props: Props) => {
     },
   });
 
+  const userMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await axios.patch(
+        `${import.meta.env.VITE_APP_URL}user-update`,
+        data
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getAll", row.parallelDataSet]);
+      props.setOpen(false);
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const submitData = {
@@ -99,8 +113,12 @@ const Update = (props: Props) => {
       ...body,
       image,
     };
-
-    mutation.mutate(submitData);
+    if (row.age) {
+      submitData.userId = row._id;
+      userMutation.mutate(submitData);
+    } else {
+      mutation.mutate(submitData);
+    }
   };
 
   const handleInputChange = (index: number, field: string, value: string) => {
@@ -202,6 +220,8 @@ const Update = (props: Props) => {
                         placeholder={
                           column.field === "name"
                             ? row.name
+                            : column.field === "family_name"
+                            ? row.family_name
                             : column.field === "description"
                             ? row.description
                             : column.field === "address"
@@ -328,7 +348,11 @@ const Update = (props: Props) => {
                         name={column.field}
                         type={column.type}
                         placeholder={
-                          column.field === "phone"
+                          column.field === "age"
+                            ? row.age
+                            : column.field === "cellphone"
+                            ? row.cellphone
+                            : column.field === "phone"
                             ? row.phone
                             : column.field === "score"
                             ? row.score
@@ -363,6 +387,19 @@ const Update = (props: Props) => {
                 }
 
                 case "checkbox": {
+                  let checked;
+                  if (body[column.field] !== undefined) {
+                    checked = body[column.field]; // Reflect user changes
+                  } else if (
+                    column.field === "has_export" ||
+                    column.field === "knowledge_based"
+                  ) {
+                    checked = true;
+                  } else if (row.isVerified) {
+                    checked = true;
+                  } else {
+                    checked = false;
+                  }
                   return (
                     <div className="item" key={index}>
                       <label>{column.headerName}</label>
@@ -371,11 +408,7 @@ const Update = (props: Props) => {
                         type={column.type}
                         placeholder={column.field}
                         onChange={updateData}
-                        checked={
-                          column.field === "has_export" || "knowledge_based"
-                            ? true
-                            : false
-                        }
+                        checked={checked}
                       />
                     </div>
                   );
@@ -421,36 +454,40 @@ const Update = (props: Props) => {
                   break;
               }
             })}
-          <div className="item">
-            <label>Material Group</label>
-            {materials && materials[0] && (
-              <CustomDropdown
-                options={materials[0]}
-                onSelect={(option: any) =>
-                  handleSelect("materialgroup", option)
-                }
-                reset={reset}
-              />
-            )}
-            <label>Material Name</label>
-            {materials && materials[1] && (
-              <CustomDropdown
-                options={materials[1]}
-                onSelect={(option: any) => handleSelect("materialname", option)}
-                reset={reset}
-              />
-            )}
-            <label>Material Grade</label>
-            {materials && materials[2] && (
-              <CustomDropdown
-                options={materials[2]}
-                onSelect={(option: any) =>
-                  handleSelect("materialgrade", option)
-                }
-                reset={reset}
-              />
-            )}
-          </div>
+          {materials && (
+            <div className="item">
+              <label>Material Group</label>
+              {materials && materials[0] && (
+                <CustomDropdown
+                  options={materials[0]}
+                  onSelect={(option: any) =>
+                    handleSelect("materialgroup", option)
+                  }
+                  reset={reset}
+                />
+              )}
+              <label>Material Name</label>
+              {materials && materials[1] && (
+                <CustomDropdown
+                  options={materials[1]}
+                  onSelect={(option: any) =>
+                    handleSelect("materialname", option)
+                  }
+                  reset={reset}
+                />
+              )}
+              <label>Material Grade</label>
+              {materials && materials[2] && (
+                <CustomDropdown
+                  options={materials[2]}
+                  onSelect={(option: any) =>
+                    handleSelect("materialgrade", option)
+                  }
+                  reset={reset}
+                />
+              )}
+            </div>
+          )}
           <button>Update</button>
         </form>
       </div>

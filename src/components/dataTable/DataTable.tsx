@@ -5,6 +5,7 @@ import { useState } from "react";
 import Update from "../update/Update";
 import UpdateMaterialProvider from "../update/UpdateMaterialProvider";
 import UpdatePartProvider from "../update/UpdatePartProvider";
+import ShowFiles from "../showFiles/ShowFiles";
 
 type Props = {
   columns: GridColDef[];
@@ -15,9 +16,15 @@ type Props = {
   parts: any;
 };
 
+interface userRow {
+  uploadedFiles?: any; // This makes uploadedFiles an optional property
+}
+
 const DataTable = (props: Props) => {
   const [open, setOpen] = useState(false);
   const [row, setRow] = useState({});
+  const [userRow, setUserRow] = useState<userRow>({});
+  const [filesOpen, setFilesOpen] = useState(false);
 
   const { materials, parts } = props;
   const isPart = !!parts;
@@ -116,6 +123,11 @@ const DataTable = (props: Props) => {
     setRow(row);
   };
 
+  const handleFiles = (row: any) => {
+    setFilesOpen(true);
+    setUserRow(row);
+  };
+
   const actionColumn: GridColDef = {
     field: "action",
     headerName: "Action",
@@ -151,6 +163,19 @@ const DataTable = (props: Props) => {
                 </button>
               </a>
             </div>
+          )}
+
+          {params.row.uploadedFiles.length > 0 && (
+            <button
+              style={{
+                padding: "5px 10px",
+                backgroundColor: "white",
+                borderRadius: "10px",
+              }}
+              onClick={() => handleFiles(params.row)}
+            >
+              Files
+            </button>
           )}
         </div>
       );
@@ -217,6 +242,12 @@ const DataTable = (props: Props) => {
             materials={materials}
           />
         ))}
+      {filesOpen && (
+        <ShowFiles
+          uploadedFiles={userRow?.uploadedFiles}
+          setFilesOpen={setFilesOpen}
+        />
+      )}
     </div>
   );
 };

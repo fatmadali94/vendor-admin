@@ -21,6 +21,7 @@ import Offers from "./pages/offers/Offers";
 import Products from "./pages/products/Products";
 import Markets from "./pages/markets/Markets";
 import Resources from "./pages/resources/Resources";
+import Users from "./pages/user/Users";
 
 const queryClient = new QueryClient();
 
@@ -71,10 +72,10 @@ function App() {
           path: "/",
           element: <Home />,
         },
-        // {
-        //   path: "/users",
-        //   element: <Users />,
-        // },
+        {
+          path: "/users",
+          element: <Users />,
+        },
         {
           path: "/messages",
           element: <Messages />,
