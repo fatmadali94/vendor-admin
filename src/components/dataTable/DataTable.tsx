@@ -30,14 +30,16 @@ const DataTable = (props: Props) => {
   const isPart = !!parts;
   const isMaterial = !!materials;
 
+  console.log(props, "PROPS");
+
   const newRows =
-    props?.rows?.length > 0 && materials
+    materials && props?.rows?.length > 0
       ? props?.rows?.map((row) => {
           let materialgrades = "";
           let materialnames = "";
           let materialgroups = "";
 
-          if (row.records && row.records.length > 0) {
+          if (row.records && row.records?.length > 0) {
             row.records.forEach(
               (record: {
                 materialgrade: { title: string };
@@ -63,7 +65,7 @@ const DataTable = (props: Props) => {
             materialgroups, // Append concatenated material group titles
           };
         })
-      : props?.rows?.length > 0 && parts
+      : parts && props?.rows?.length > 0
       ? props?.rows?.map((row) => {
           let partgeneralids = "";
           let partnames = "";
@@ -95,7 +97,7 @@ const DataTable = (props: Props) => {
             partgroups, // Append concatenated material group titles
           };
         })
-      : props.rows;
+      : props.rows ?? [];
 
   // TEST THE API
 
@@ -165,7 +167,7 @@ const DataTable = (props: Props) => {
             </div>
           )}
 
-          {params.row.uploadedFiles.length > 0 && (
+          {params.row.uploadedFiles?.length > 0 && (
             <button
               style={{
                 padding: "5px 10px",

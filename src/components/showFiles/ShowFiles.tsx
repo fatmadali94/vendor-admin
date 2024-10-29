@@ -6,7 +6,6 @@ import "./ShowFiles.scss";
 
 const ShowFiles = (props: any) => {
   const { uploadedFiles, setFilesOpen } = props;
-  console.log("uploadedFiles", uploadedFiles);
 
   const downloadFile = async (fileUrl: any, filename: any) => {
     try {
