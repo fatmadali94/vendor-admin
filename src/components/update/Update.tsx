@@ -15,7 +15,7 @@ type Props = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   parallelDataSet: string;
   row: any;
-  materials: any;
+  materials?: any;
 };
 
 interface DropdownOption {
@@ -26,30 +26,22 @@ interface DropdownOption {
 interface DropdownOptions {
   materialNames: DropdownOption[];
   materialGrades: DropdownOption[];
-  materialGroups: DropdownOption[];
-}
-
-interface selections {
-  materialgrade: any;
-  materialname: any;
-  materialgroup: any;
+  partNames: DropdownOption[];
+  partGeneralIds: DropdownOption[];
 }
 
 const Update = (props: Props) => {
-  const { row, materials } = props;
-  const [formData, setFormData] = useState({ records: row.records || [] });
+  const { row, materials, slug } = props;
+  const [selectedItems, setSelectedItems] = useState<DropdownOption[]>([]); // Store selected items
   const [image, setImage] = useState<any>();
   const [dropdownOptions, setDropdownOptions] = useState<DropdownOptions>({
     materialNames: [],
     materialGrades: [],
-    materialGroups: [],
+    partNames: [],
+    partGeneralIds: [],
   });
+  const [displayItems, setDisplayItems] = useState([]);
 
-  const [selections, setSelections] = useState<selections>({
-    materialgrade: {},
-    materialgroup: {},
-    materialname: {},
-  });
   const [reset, setReset] = useState(false);
 
   const [body, setBody] = useState<any>({});
@@ -64,12 +56,14 @@ const Update = (props: Props) => {
         const responses = await Promise.all([
           axios.get(`${import.meta.env.VITE_APP_URL}/materialNames`),
           axios.get(`${import.meta.env.VITE_APP_URL}/materialGrades`),
-          axios.get(`${import.meta.env.VITE_APP_URL}/materialGroups`),
+          axios.get(`${import.meta.env.VITE_APP_URL}/partNames`),
+          axios.get(`${import.meta.env.VITE_APP_URL}/partGeneralIds`),
         ]);
         setDropdownOptions({
           materialNames: responses[0].data,
           materialGrades: responses[1].data,
-          materialGroups: responses[2].data,
+          partNames: responses[2].data,
+          partGeneralIds: responses[3].data,
         });
       } catch (error) {
         console.error("Failed to fetch dropdown options:", error);
@@ -81,7 +75,7 @@ const Update = (props: Props) => {
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await axios.patch(
-        `${import.meta.env.VITE_APP_URL}/materialProvider/${row._id}`,
+        `${import.meta.env.VITE_APP_URL}${slug.single}/${row._id}`,
         data
       );
       return response.data;
@@ -92,43 +86,31 @@ const Update = (props: Props) => {
     },
   });
 
-  const userMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const response = await axios.patch(
-        `${import.meta.env.VITE_APP_URL}user-update`,
-        data
-      );
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["getAll", row.parallelDataSet]);
-      props.setOpen(false);
-    },
-  });
+  // const userMutation = useMutation({
+  //   mutationFn: async (data: any) => {
+  //     const response = await axios.patch(
+  //       `${import.meta.env.VITE_APP_URL}user-update`,
+  //       data
+  //     );
+  //     return response.data;
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(["getAll", row.parallelDataSet]);
+  //     props.setOpen(false);
+  //   },
+  // });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const submitData = {
-      ...formData,
+      selectedIds: selectedItems.map((item) => item._id), // Send only IDs
       ...body,
       image,
     };
-    if (row.age) {
-      submitData.userId = row._id;
-      userMutation.mutate(submitData);
-    } else {
-      mutation.mutate(submitData);
-    }
-  };
 
-  const handleInputChange = (index: number, field: string, value: string) => {
-    const updatedRecords = formData.records.map((record: any, idx: any) => {
-      if (idx === index) {
-        return { ...record, [field]: value };
-      }
-      return record;
-    });
-    setFormData({ ...formData, records: updatedRecords });
+    console.log("submitData", submitData);
+
+    mutation.mutate(submitData);
   };
 
   const updateData = (e: any) => {
@@ -152,36 +134,28 @@ const Update = (props: Props) => {
     };
   };
 
-  const handleDelete = (id: any) => {
-    const updatedRecords = formData.records.filter(
-      (record: any) => record._id !== id
-    );
-    setFormData({
-      ...formData,
-      records: updatedRecords,
-    });
+  const handleSelect = (option: DropdownOption) => {
+    setSelectedItems((prev) => [...prev, option]); // Store the selected item
+    setReset(true); // Reset the dropdown
   };
-
-  const handleSelect = (dropdownName: any, selectedOption: any) => {
-    setSelections((prevState) => ({
-      ...prevState,
-      [dropdownName]: selectedOption,
-    }));
-  };
-
   useEffect(() => {
     if (reset) {
       setReset(false);
     }
   }, [reset]);
 
-  const buttonClickHandler = (event: any) => {
+  const buttonClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setFormData({
-      ...formData,
-      records: [...formData.records, selections], // Append the new object to the array
-    });
-    setReset(true);
+    const lastSelectedItem =
+      selectedItems.length > 0 ? selectedItems[selectedItems.length - 1] : null;
+
+    // @ts-ignore
+    setDisplayItems((prev) => [...prev, lastSelectedItem]);
+    if (lastSelectedItem) {
+      console.log("Selected Item:", lastSelectedItem);
+    } else {
+      alert("Please select an item before submitting.");
+    }
   };
 
   return (
@@ -237,107 +211,6 @@ const Update = (props: Props) => {
                     </div>
                   );
                   break;
-                }
-
-                case "record": {
-                  return (
-                    row &&
-                    formData.records.map((record: any, index: any) => (
-                      <div
-                        key={index}
-                        style={{
-                          border: "1px solid white",
-                          padding: "10px",
-                          margin: 10,
-                        }}
-                      >
-                        <div
-                          style={{ display: "flex", flexDirection: "column" }}
-                        >
-                          <label>Material Name</label>
-                          <select
-                            value={
-                              record.materialname._id || record.materialname
-                            }
-                            onChange={(e) =>
-                              handleInputChange(
-                                index,
-                                "materialname",
-                                e.target.value
-                              )
-                            }
-                          >
-                            {dropdownOptions.materialNames.map((option) => (
-                              <option key={option._id} value={option._id}>
-                                {option.title}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div
-                          style={{ display: "flex", flexDirection: "column" }}
-                        >
-                          <label>Material Grade</label>
-                          <select
-                            value={
-                              record.materialgrade._id || record.materialgrade
-                            }
-                            onChange={(e) =>
-                              handleInputChange(
-                                index,
-                                "materialgrade",
-                                e.target.value
-                              )
-                            }
-                          >
-                            {dropdownOptions.materialGrades.map((option) => (
-                              <option key={option._id} value={option._id}>
-                                {option.title}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div
-                          style={{ display: "flex", flexDirection: "column" }}
-                        >
-                          <label>Material Group</label>
-                          <select
-                            value={
-                              record.materialgroup._id || record.materialgroup
-                            }
-                            onChange={(e) =>
-                              handleInputChange(
-                                index,
-                                "materialgroup",
-                                e.target.value
-                              )
-                            }
-                          >
-                            {dropdownOptions.materialGroups.map((option) => (
-                              <option key={option._id} value={option._id}>
-                                {option.title}
-                              </option>
-                            ))}
-                          </select>
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleDelete(record._id);
-                            }}
-                            style={{
-                              backgroundColor: "red",
-                              fontSize: "20px",
-                              color: "white",
-                              marginTop: "5px",
-                            }}
-                          >
-                            delete
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  );
                 }
 
                 case "number": {
@@ -454,40 +327,83 @@ const Update = (props: Props) => {
                   break;
               }
             })}
-          {materials && (
-            <div className="item">
-              <label>Material Group</label>
-              {materials && materials[0] && (
-                <CustomDropdown
-                  options={materials[0]}
-                  onSelect={(option: any) =>
-                    handleSelect("materialgroup", option)
-                  }
-                  reset={reset}
-                />
-              )}
-              <label>Material Name</label>
-              {materials && materials[1] && (
-                <CustomDropdown
-                  options={materials[1]}
-                  onSelect={(option: any) =>
-                    handleSelect("materialname", option)
-                  }
-                  reset={reset}
-                />
-              )}
-              <label>Material Grade</label>
-              {materials && materials[2] && (
-                <CustomDropdown
-                  options={materials[2]}
-                  onSelect={(option: any) =>
-                    handleSelect("materialgrade", option)
-                  }
-                  reset={reset}
-                />
-              )}
-            </div>
-          )}
+          <div className="item">
+            {props.parallelDataSet === "materialNames" && (
+              <>
+                <p>what we already have :</p>
+                {row.materialNames &&
+                  row.materialNames.map((item: any) => (
+                    <div className="flex flex-col p-4">{item.title}</div>
+                  ))}
+                <label>Material Name</label>
+                {
+                  <CustomDropdown
+                    options={dropdownOptions.materialNames}
+                    onSelect={handleSelect}
+                    reset={reset}
+                  />
+                }
+              </>
+            )}
+            {props.parallelDataSet === "partNames" && (
+              <>
+                <p>what we already have :</p>
+                {row.partNames &&
+                  row.partNames.map((item: any) => (
+                    <div className="flex flex-col p-4">{item.title}</div>
+                  ))}
+                <label>Part Name</label>
+                {
+                  <CustomDropdown
+                    options={dropdownOptions.partNames}
+                    onSelect={handleSelect}
+                    reset={reset}
+                  />
+                }
+              </>
+            )}
+
+            {props.parallelDataSet === "materialGrades" && (
+              <>
+                <p>what we already have :</p>
+                {row.materialGrades &&
+                  row.materialGrades.map((item: any) => (
+                    <div className="flex flex-col p-4">{item.title}</div>
+                  ))}
+                <label>Material Grade</label>
+                {
+                  <CustomDropdown
+                    options={dropdownOptions.materialGrades}
+                    onSelect={handleSelect}
+                    reset={reset}
+                  />
+                }
+              </>
+            )}
+            {props.parallelDataSet === "partGeneralIds" && (
+              <>
+                <p>what we already have :</p>
+                {row.partGeneralIds &&
+                  row.partGeneralIds.map((item: any) => (
+                    <div className="flex flex-col p-4">{item.title}</div>
+                  ))}
+                <label>Part GeneralId</label>
+                {
+                  <CustomDropdown
+                    options={dropdownOptions.partGeneralIds}
+                    onSelect={handleSelect}
+                    reset={reset}
+                  />
+                }
+              </>
+            )}
+            {displayItems &&
+              displayItems.map((item: any, index) => (
+                <div key={index} className="flex flex-col">
+                  {item?.title}
+                </div>
+              ))}
+          </div>
           <button>Update</button>
         </form>
       </div>

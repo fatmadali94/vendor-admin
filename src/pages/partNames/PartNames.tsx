@@ -28,10 +28,15 @@ const columns: GridColDef[] = [
     type: "text",
     width: 200,
   },
-
   {
-    field: "partgroups",
-    headerName: "partgroups",
+    field: "BTN",
+    headerName: "BTN",
+    width: 150,
+    type: "button",
+  },
+  {
+    field: "partGeneralIds",
+    headerName: "partGeneralIds",
     width: 150,
     type: "options",
   },
@@ -77,7 +82,7 @@ const partNames = () => {
           slug={slug}
           columns={columns}
           rows={data}
-          parallelDataSet="partNames"
+          parallelDataSet="partGeneralIds"
           materials={undefined}
           parts={undefined}
         />

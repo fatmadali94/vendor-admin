@@ -29,9 +29,6 @@ const DataTable = (props: Props) => {
   const { materials, parts } = props;
   const isPart = !!parts;
   const isMaterial = !!materials;
-
-  console.log(props, "PROPS");
-
   const newRows =
     materials && props?.rows?.length > 0
       ? props?.rows?.map((row) => {
