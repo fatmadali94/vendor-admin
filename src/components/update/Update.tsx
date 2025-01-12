@@ -31,7 +31,7 @@ interface DropdownOptions {
 }
 
 const Update = (props: Props) => {
-  const { row, materials, slug } = props;
+  const { row, slug } = props;
   const [selectedItems, setSelectedItems] = useState<DropdownOption[]>([]); // Store selected items
   const [image, setImage] = useState<any>();
   const [dropdownOptions, setDropdownOptions] = useState<DropdownOptions>({
