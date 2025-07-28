@@ -16,6 +16,8 @@ import PartGeneralIds from "./pages/partGeneralIds/PartGeneralIds";
 import PartProviders from "./pages/partProviders/PartProviders";
 import MaterialGroups from "./pages/materialGroups/MaterialGroups";
 import Exhibitions from "./pages/exhibitions/Exhibitions";
+import DigitalMagazine from "./pages/digitalMagazine/DigitalMagazine";
+import Podcast from "./pages/podcasts/Podcast";
 import Messages from "./pages/messages/Messages";
 import Offers from "./pages/offers/Offers";
 import Products from "./pages/products/Products";
@@ -120,7 +122,14 @@ function App() {
           path: "/exhibitions",
           element: <Exhibitions />,
         },
-
+        {
+          path: "/digitalMagazine",
+          element: <DigitalMagazine />,
+        },
+        {
+          path: "/podcast",
+          element: <Podcast />,
+        },
         {
           path: "/offers",
           element: <Offers />,

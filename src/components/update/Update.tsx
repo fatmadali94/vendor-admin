@@ -78,6 +78,7 @@ const Update = (props: Props) => {
         `${import.meta.env.VITE_APP_URL}${slug.single}/${row._id}`,
         data
       );
+      console.log(response,"respons")
       return response.data;
     },
     onSuccess: () => {

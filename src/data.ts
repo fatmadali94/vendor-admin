@@ -122,6 +122,25 @@ export const menu = [
     ],
   },
   {
+    id: 4,
+    title: "DigitalLibrary",
+    listItems: [
+      {
+        id: 1,
+        title: "DigitalMagazine",
+        url: "/digitalMagazine",
+        icon: "product.svg",
+      },
+      {
+        id: 2,
+        title: "Podcast",
+        url: "/podcast",
+        icon: "product.svg",
+      },
+    ],
+  },
+  
+  {
     id: 5,
     title: "general",
     listItems: [
