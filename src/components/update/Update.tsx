@@ -78,7 +78,7 @@ const Update = (props: Props) => {
         `${import.meta.env.VITE_APP_URL}${slug.single}/${row._id}`,
         data
       );
-      console.log(response,"respons")
+      console.log(response, "response");
       return response.data;
     },
     onSuccess: () => {
@@ -106,7 +106,7 @@ const Update = (props: Props) => {
     const submitData = {
       selectedIds: selectedItems.map((item) => item._id), // Send only IDs
       ...body,
-      image,
+      ...(image ? { image } : {}),
     };
 
     console.log("submitData", submitData);

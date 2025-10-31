@@ -12,6 +12,22 @@ type Props = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+const PODCAST_CATEGORIES = [
+  "usefulKnowledge",
+  "tireManufacturing",
+  "management", // note the capital M – must match your DB enum!
+  "partsAndmaterials",
+  "energyAndfacilities",
+] as const;
+
+const CATEGORY_LABELS: Record<(typeof PODCAST_CATEGORIES)[number], string> = {
+  usefulKnowledge: "Useful Knowledge",
+  tireManufacturing: "Tire Manufacturing",
+  management: "Management",
+  partsAndmaterials: "Parts & Materials",
+  energyAndfacilities: "Energy & Facilities",
+};
+
 const AddPodcast = (props: Props) => {
   const { slug } = props;
 
@@ -19,15 +35,19 @@ const AddPodcast = (props: Props) => {
   const [audio, setAudio] = useState<string | null>(null);
   const [topics, setTopics] = useState<{ topic: string }[]>([]);
   const [body, setBody] = useState<any>({});
-  const [sponsors, setSponsors] = useState<{ name: string; images: string[] }[]>([]);
-  const [narrator, setNarrator] = useState<{ name: string; images: string[] }[]>([]);
-  const [description, setDescription] = useState('');
+  const [sponsors, setSponsors] = useState<
+    { name: string; images: string[] }[]
+  >([]);
+  const [narrator, setNarrator] = useState<
+    { name: string; images: string[] }[]
+  >([]);
+  const [description, setDescription] = useState("");
 
   const queryClient = useQueryClient();
 
   const createItem = async (body: any) => {
     return axios
-        .post(`${import.meta.env.VITE_APP_URL}/api/podcasts`, body)
+      .post(`${import.meta.env.VITE_APP_URL}api/podcasts`, body)
       .then((res) => res.data);
   };
 
@@ -46,25 +66,27 @@ const AddPodcast = (props: Props) => {
     }));
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
+  const handleFileSelect = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: string
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-  
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
-        const result = reader.result as string;
-        if (type === "audio") {
-          console.log("✅ Audio base64 preview:", result.substring(0, 100));
-          setAudio(result);
-        } else if (type === "image") {
-          console.log("🖼️ Image base64 preview:", result.substring(0, 100));
-          setImage(result);
-        }
-      };
+      const result = reader.result as string;
+      if (type === "audio") {
+        console.log("✅ Audio base64 preview:", result.substring(0, 100));
+        setAudio(result);
+      } else if (type === "image") {
+        console.log("🖼️ Image base64 preview:", result.substring(0, 100));
+        setImage(result);
+      }
+    };
   };
-  
-  
+
   const handleArrayImages = (files: FileList): Promise<string[]> => {
     const promises = Array.from(files).map((file) => {
       return new Promise<string>((resolve) => {
@@ -104,8 +126,6 @@ const AddPodcast = (props: Props) => {
       : setNarrator([...narrator, newItem]);
   };
 
-
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -123,24 +143,34 @@ const AddPodcast = (props: Props) => {
     mutation.mutate(finalData);
     props.setOpen(false);
     alert("Podcast added successfully!");
-    console.log("🚀 Final audio to submit:", audio?.substring(0, 100));    
+    console.log("🚀 Final audio to submit:", audio?.substring(0, 100));
   };
 
   return (
     <div className="add">
       <div className="modal">
-        <span className="close" onClick={() => props.setOpen(false)}>X</span>
+        <span className="close" onClick={() => props.setOpen(false)}>
+          X
+        </span>
         <h1>Add new {slug.title}</h1>
 
         <form onSubmit={handleSubmit}>
           <div className="item">
             <label>Cover Image</label>
-            <input type="file" accept="image/*" onChange={(e) => handleFileSelect(e, "image")} />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFileSelect(e, "image")}
+            />
           </div>
 
           <div className="item">
             <label>Audio File</label>
-            <input type="file" accept="audio/*" onChange={(e) => handleFileSelect(e, "audio")} />
+            <input
+              type="file"
+              accept="audio/*"
+              onChange={(e) => handleFileSelect(e, "audio")}
+            />
           </div>
 
           {props.columns.map((column, index) => {
@@ -158,11 +188,32 @@ const AddPodcast = (props: Props) => {
             );
           })}
 
+          <label className="block text-sm font-medium mb-1">Category</label>
+          <select
+            name="category"
+            value={body.category ?? ""} // keeps it controlled
+            onChange={updateData}
+            required
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="" disabled>
+              Select a category…
+            </option>
+            {PODCAST_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {CATEGORY_LABELS[cat]}
+              </option>
+            ))}
+          </select>
+
           {/* ✅ Topics Section */}
           <div className="item">
             <label>Topics</label>
             {topics.map((t, i) => (
-              <div key={i} style={{ display: "flex", gap: "10px", marginBottom: "8px" }}>
+              <div
+                key={i}
+                style={{ display: "flex", gap: "10px", marginBottom: "8px" }}
+              >
                 <input
                   type="text"
                   placeholder="Topic"
@@ -174,12 +225,20 @@ const AddPodcast = (props: Props) => {
                   }}
                   style={{ flex: 1 }}
                 />
-                <button type="button" onClick={() => setTopics(topics.filter((_, index) => index !== i))}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setTopics(topics.filter((_, index) => index !== i))
+                  }
+                >
                   ✕
                 </button>
               </div>
             ))}
-            <button type="button" onClick={() => setTopics([...topics, { topic: "" }])}>
+            <button
+              type="button"
+              onClick={() => setTopics([...topics, { topic: "" }])}
+            >
               + Add Topic
             </button>
           </div>
@@ -193,20 +252,31 @@ const AddPodcast = (props: Props) => {
                   type="text"
                   placeholder="Sponsor Name"
                   value={s.name}
-                  onChange={(e) => handleGroupChange("sponsors", i, "name", e.target.value)}
+                  onChange={(e) =>
+                    handleGroupChange("sponsors", i, "name", e.target.value)
+                  }
                 />
                 <input
                   type="file"
                   multiple
                   accept="image/*"
-                  onChange={(e) => handleGroupChange("sponsors", i, "images", e.target.files)}
+                  onChange={(e) =>
+                    handleGroupChange("sponsors", i, "images", e.target.files)
+                  }
                 />
-                <button type="button" onClick={() => setSponsors(sponsors.filter((_, idx) => idx !== i))}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSponsors(sponsors.filter((_, idx) => idx !== i))
+                  }
+                >
                   ✕ Remove Sponsor
                 </button>
               </div>
             ))}
-            <button type="button" onClick={() => addGroupItem("sponsors")}>+ Add Sponsor</button>
+            <button type="button" onClick={() => addGroupItem("sponsors")}>
+              + Add Sponsor
+            </button>
           </div>
 
           {/* ✅ Narrators Section */}
@@ -218,29 +288,46 @@ const AddPodcast = (props: Props) => {
                   type="text"
                   placeholder="Narrator Name"
                   value={n.name}
-                  onChange={(e) => handleGroupChange("narrator", i, "name", e.target.value)}
+                  onChange={(e) =>
+                    handleGroupChange("narrator", i, "name", e.target.value)
+                  }
                 />
                 <input
                   type="file"
                   multiple
                   accept="image/*"
-                  onChange={(e) => handleGroupChange("narrator", i, "images", e.target.files)}
+                  onChange={(e) =>
+                    handleGroupChange("narrator", i, "images", e.target.files)
+                  }
                 />
-                <button type="button" onClick={() => setNarrator(narrator.filter((_, idx) => idx !== i))}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setNarrator(narrator.filter((_, idx) => idx !== i))
+                  }
+                >
                   ✕ Remove Narrator
                 </button>
               </div>
             ))}
-            <button type="button" onClick={() => addGroupItem("narrator")}>+ Add Narrator</button>
+            <button type="button" onClick={() => addGroupItem("narrator")}>
+              + Add Narrator
+            </button>
           </div>
           <div className="item">
-                <label>description</label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target. value)}
-                  style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc", height: "80px" }}
-                />
-              </div>
+            <label>description</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "8px",
+                borderRadius: "5px",
+                border: "1px solid #ccc",
+                height: "80px",
+              }}
+            />
+          </div>
 
           <button type="submit">Submit</button>
         </form>

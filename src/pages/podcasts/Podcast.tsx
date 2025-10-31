@@ -105,7 +105,7 @@ interface PodcastData {
           {open && (
             <AddPodcast
               setOpen={setOpen}
-              slug={{ title: "Podcast", route: "/api/podcasts" }}
+              slug={{ title: "Podcast", route: "api/podcasts" }}
               columns={[
                 { field: "title", headerName: "Title", type: "text" },
                 { field: "year", headerName: "Year", type: "text" },
